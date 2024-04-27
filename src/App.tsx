@@ -1,0 +1,41 @@
+import { BrowserRouter } from 'react-router-dom';
+import './App.scss';
+import Router from './Router';
+import NavHeader from './Navigation/NavHeader';
+import { useState, createContext } from 'react';
+import { UserContextType } from './Utils/Types';
+
+function App() {
+
+  // Context will hold this information to be accessible from anywhere in the App
+  const [isAdmin, setIsAdmin] = useState(false);
+  // Determines if user is logged in
+  const [username, setUsername] = useState<string | null>(null);
+
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <UserContext.Provider
+          value={{
+            isAdmin, setIsAdmin,
+            username, setUsername
+          }}
+        >
+          <Router />
+          <NavHeader />
+        </UserContext.Provider>
+      </BrowserRouter>
+    </div>
+  );
+}
+
+
+
+export const UserContext = createContext<UserContextType>({
+  isAdmin: false,
+  setIsAdmin: (isAdmin: boolean) => { },
+  username: null,
+  setUsername: (username: string) => { },
+});
+
+export default App;
