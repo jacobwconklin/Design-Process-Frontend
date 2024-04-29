@@ -15,10 +15,20 @@
     // background-color: darkblue;
     box-shadow: inset 0px 0px 2px 4px rgba(0, 0, 0, 0.2);
     color: white;
-    min-width: 330px;
+    min-width: 350px;
     z-index: 20;
     // font-size: 40px;
     text-wrap: nowrap;
+
+    .UserIconButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        padding: 10px;
+        margin-right: 15px;
+        margin-left: 0px;
+    }
 
     .HeaderContainer {
         height: 60px;

@@ -4,9 +4,14 @@ import { UserContext } from '../../App';
 import { UserContextType } from '../../Utils/Types';
 import UserView from './UserView/UserView';
 import { useNavigate } from 'react-router-dom';
+import AdminView from './AdminView/AdminView';
 
 // Activities handles differentiating between showing user and admin dashboards. 
 const Activities = (props: {}) => {
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     const { isAdmin, email } = useContext(UserContext) as UserContextType;
 
@@ -24,9 +29,7 @@ const Activities = (props: {}) => {
     <div className="Activities">
         {
             isAdmin ? 
-            <>
-                <h1>Admin Dashboard</h1>
-            </>
+            <AdminView />
             :
             <UserView />
         }

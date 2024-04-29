@@ -1,0 +1,12 @@
+1) What are desired User actions?
+    forgot / recover password?
+        * store sha-512 hash of pw with salt added in be to compare w/ for logins
+        * when user creates account / logs in send them back the db id for that person as their "token"? (maybe JWT better? Could add expiration?)
+        * if user forgets password, send recovery "code" (6 digits or so) to their email and have them enter it (will have to create temporary database entry with id and recovery to compare I guess)
+        * user inputs recovery code and new password, if it matches override old password in db with new password and log user in.
+    validate user emails on login?
+
+
+2) What are desired Admin action?
+    ie show all users who haven't submitted in last 'x' amount of time?
+    show users with less than 'x' submissions?

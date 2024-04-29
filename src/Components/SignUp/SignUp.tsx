@@ -13,7 +13,6 @@ import { useContext, useEffect, useState } from 'react';
 import { PlayerInformation, UserContextType } from '../../Utils/Types';
 import { UserContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
-import { allCountriesArray } from '../../Utils/Countries';
 import { getObjectFromStorage, saveObjectToStorage } from '../../Utils/Utils';
 
 // SignUp
@@ -25,13 +24,13 @@ const SignUp = () => {
     }, [])
 
     const [isSuccessfullySubmitted, setIsSuccessfullySubmitted] = useState(false);
-    const [name, setName] = useState('');
     const [stateEmail, setStateEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [participationReason, setParticipationReason] = useState('');
     const [gender, setGender] = useState('');
     const [age, setAge] = useState<number | null>(0);
-    const [residence, setResidence] = useState('');
+    const [employer, setEmployer] = useState('');
+    const [team, setTeam] = useState('');
+    const [title, setTitle] = useState('');
 
     // ethnicity is a multi select that is converted to a comma separated string
     const ethnicityOptions: SelectProps['options'] = [
@@ -46,14 +45,14 @@ const SignUp = () => {
     ]
     const [ethnicity, setEthnicity] = useState<string[]>([]);
 
-    // If user is an undergraduate or graduate college student open the college 
-    // questions to them
-    const [isCollegeStudent, setIsCollegeStudent] = useState(0);
-    // Begin only for college students
-    const [university, setUniversity] = useState('');
-    const [degreeProgram, setDegreeProgram] = useState('');
-    const [yearsInProgram, setYearsInProgram] = useState<null | number>(0);
-    // End only for college students
+    // // If user is an undergraduate or graduate college student open the college 
+    // // questions to them
+    // const [isCollegeStudent, setIsCollegeStudent] = useState(0);
+    // // Begin only for college students
+    // const [university, setUniversity] = useState('');
+    // const [degreeProgram, setDegreeProgram] = useState('');
+    // const [yearsInProgram, setYearsInProgram] = useState<null | number>(0);
+    // // End only for college students
 
     /**
      * Information for Table for gathering Educational Background
@@ -165,25 +164,255 @@ const SignUp = () => {
     ];
 
     /**
-     * End information for Table for gathering Educational Background
+     * Information for Table for gathering Technical Organization Background and years of specializations
      */
+    const specializations = ["Aerodynamics", "Computer Science or Computer Engineering", "Electrical Engineering", 
+        "Electromagnetics, EMI, EMC", "Environmental Testing", "Logistics and/or Supply Chains", "Manufacturing", 
+        "Mechanical Design", "Operations Research", "Project or Program Management", "Systems (or Mission) Engineering",
+        "Structural Analysis", "Threat Analysis"
+    ];
 
-    // 7 point questions:
-    const experienceQuestions = ["riskAnalysisExperience", "supplierExperience", "proposalOrStatementOfWorkExperience", "bidsForRequestsExperience", "systemArchitectureExperience", "golfExperience", "systemsEngineeringExpertise",
-        "statementOfWorkExpertise"];
+    const [specializationCompleted, setSpecializationCompleted] = useState(Array(specializations.length + 1).fill(0));
+    const [specializationYears, setSpecializationYears] = useState(Array(specializations.length + 1).fill(0));
+    const [otherSpecialization, setOtherSpecialization] = useState('');
+
+
+    // Create each row of table
+    const getSpecializationDataSource = () => {
+
+        const dataSourceArray = specializations.map((specialization, index) => {
+            return {
+                key: index,
+                Specialization: <p>{specialization}</p>,
+                Completed: <div>
+                    <Radio.Group
+                        onChange={(e) => {
+                            const newSpecializationCompleted = [...specializationCompleted];
+                            newSpecializationCompleted[index] = e.target.value;
+                            setSpecializationCompleted(newSpecializationCompleted);
+                        }}
+                        value={specializationCompleted[index]}>
+                        <Radio value={0}>No</Radio>
+                        <Radio value={1}>Yes</Radio>
+                    </Radio.Group>
+                </div>,
+                Years: <div>
+                    <InputNumber
+                        value={specializationYears[index]}
+                        min={0}
+                        max={99}
+                        onChange={(e) => {
+                            const newSpecializationYears = [...specializationYears];
+                            newSpecializationYears[index] = e;
+                            setSpecializationYears(newSpecializationYears);
+                        }}
+                        disabled={specializationCompleted[index] === 0}
+                    />
+                </div>,
+            }
+        });
+        dataSourceArray.push({
+            key: specializations.length,
+            Specialization: <div>
+                <p>Other (Please Specify)</p>
+                <Input
+                    value={otherSpecialization}
+                    onChange={(e) => setOtherSpecialization(e.target.value)}
+                    maxLength={64}
+                />
+            </div>,
+            Completed: <div>
+                <p style={{ color: 'whitesmoke' }}> . </p>
+                <Radio.Group
+                    onChange={(e) => {
+                        const newSpecializationCompleted = [...specializationCompleted];
+                        newSpecializationCompleted[specializations.length] = e.target.value;
+                        setSpecializationCompleted(newSpecializationCompleted);
+                    }}
+                    value={specializationCompleted[specializations.length]}>
+                    <Radio value={0}>No</Radio>
+                    <Radio value={1}>Yes</Radio>
+                </Radio.Group>
+            </div>,
+            Years: <div>
+                <p style={{ color: 'whitesmoke' }}> . </p>
+                <InputNumber
+                    value={specializationYears[specializations.length]}
+                    min={0}
+                    max={99}
+                    onChange={(e) => {
+                        const newSpecializationYears = [...specializationYears];
+                        newSpecializationYears[specializations.length] = e;;
+                        setSpecializationYears(newSpecializationYears);
+                    }}
+                    disabled={specializationCompleted[specializations.length] === 0}
+                />
+            </div>,
+
+        })
+        return dataSourceArray;
+    }
+
+    const specializationColumns = [
+        {
+            title: 'Specialization',
+            dataIndex: 'Specialization',
+            key: 'Specialization',
+            width: '30%'
+        },
+        {
+            title: 'Have you worked or volunteered in this field?',
+            dataIndex: 'Completed',
+            key: 'Completed',
+            width: '30%'
+        },
+        {
+            title: 'Number of Years',
+            dataIndex: 'Years',
+            key: 'Years',
+            width: '30%'
+        },
+    ];
+
+    /**
+     * End information for Table for gathering Specialization Background
+     */
+    
+
+    /**
+     * Information for Table for gathering Navy Agency years of work experience
+     * Any shipyard, NAVSEA, PNAV, Pentagon, NSWC- Dahlgren Division, NSWC- Carderock Division, NSWC – Other (please specify),
+     */
+    const agencies = [
+        "Any shipyard", "NAVSEA", "PNAV", "Pentagon", "NSWC - Dahlgren Division", "NSWC - Carderock Division", "NSWC - Other (please specify)"
+    ];
+
+    const [agenciesCompleted, setAgenciesCompleted] = useState(Array(agencies.length + 1).fill(0));
+    const [agencyYears, setAgencyYears] = useState(Array(agencies.length + 1).fill(0));
+    const [otherAgency, setOtherAgency] = useState('');
+
+
+    // Create each row of table
+    const getAgenciesDataSource = () => {
+
+        const dataSourceArray = agencies.map((agency, index) => {
+            return {
+                key: index,
+                Agency: <p>{agency}</p>,
+                Completed: <div>
+                    <Radio.Group
+                        onChange={(e) => {
+                            const newAgenciesCompleted = [...agenciesCompleted];
+                            newAgenciesCompleted[index] = e.target.value;
+                            setAgenciesCompleted(newAgenciesCompleted);
+                        }}
+                        value={agenciesCompleted[index]}>
+                        <Radio value={0}>No</Radio>
+                        <Radio value={1}>Yes</Radio>
+                    </Radio.Group>
+                </div>,
+                Years: <div>
+                    <InputNumber
+                        value={agencyYears[index]}
+                        min={0}
+                        max={99}
+                        onChange={(e) => {
+                            const newAgencyYears = [...agencyYears];
+                            newAgencyYears[index] = e;
+                            setAgencyYears(newAgencyYears);
+                        }}
+                        disabled={agenciesCompleted[index] === 0}
+                    />
+                </div>,
+            }
+        });
+        dataSourceArray.push({
+            key: agencies.length,
+            Agency: <div>
+                <p>Other (Please Specify)</p>
+                <Input
+                    value={otherAgency}
+                    onChange={(e) => setOtherAgency(e.target.value)}
+                    maxLength={64}
+                />
+            </div>,
+            Completed: <div>
+                <p style={{ color: 'whitesmoke' }}> . </p>
+                <Radio.Group
+                    onChange={(e) => {
+                        const newAgenciesCompleted = [...agenciesCompleted];
+                        newAgenciesCompleted[agencies.length] = e.target.value;
+                        setAgenciesCompleted(newAgenciesCompleted);
+                    }}
+                    value={agenciesCompleted[agencies.length]}>
+                    <Radio value={0}>No</Radio>
+                    <Radio value={1}>Yes</Radio>
+                </Radio.Group>
+            </div>,
+            Years: <div>
+                <p style={{ color: 'whitesmoke' }}> . </p>
+                <InputNumber
+                    value={agencyYears[agencies.length]}
+                    min={0}
+                    max={99}
+                    onChange={(e) => {
+                        const newAgencyYears = [...agencyYears];
+                        newAgencyYears[agencies.length] = e;;
+                        setAgencyYears(newAgencyYears);
+                    }}
+                    disabled={agenciesCompleted[agencies.length] === 0}
+                />
+            </div>,
+
+        })
+        return dataSourceArray;
+    }
+
+    const agencyColumns = [
+        {
+            title: 'Agency',
+            dataIndex: 'Agency',
+            key: 'Agency',
+            width: '30%'
+        },
+        {
+            title: 'Have you worked or volunteered in this field?',
+            dataIndex: 'Completed',
+            key: 'Completed',
+            width: '30%'
+        },
+        {
+            title: 'Number of Years',
+            dataIndex: 'Years',
+            key: 'Years',
+            width: '30%'
+        },
+    ];
+
+    // 7 point experience questions:
+    const experienceQuestions = ["riskAnalysisExperience", "supplierExperience"];
     // how experience questions are presented to users:
     const experienceQuestionPrompts = [
         "How experienced are you with probabilistic reasoning and/or risk analysis?",
-        "Do you have any experience with working with suppliers or contractors?",
-        "Do you have any experience evaluating or creating request for proposal (RFP), or statement of work (SOW) documents?",
-        "Do you have any experience submitting bids for requests for proposal (RFPs)?",
-        "Do you have any experience with creating or evaluating system architectures?",
-        "How familiar are you with the game of Golf?",
-        "A systems engineering problem is:",
-        "Defining statement of work documents and / or work contracts is:",
+        "Do you have any experience with working with suppliers or contractors?"
     ];
     // values saved for experience questions:
-    const [experienceValues, setExperienceValues] = useState<Array<null | number>>(Array(experienceQuestions.length).fill(null));
+    const [experienceValues, setExperienceValues] = useState<Array<null | number>>(Array(experienceQuestionPrompts.length).fill(null));
+
+    // 7 point familiarity questions:
+    const familiarityQuestions = [
+        "projectContextFamiliarity",
+        "navyPlatformFamiliarity",
+        "designChangeCharacteristicsFamiliarity"
+    ];
+    // how experience questions are presented to users:
+    const familiarityQuestionPrompts = [
+        "How familiar are you with the context of this specific project?", 
+        "How familiar are you with the Navy platform in this specific project?",
+        "How familiar are you with the characteristics of the design change studied in this project?"
+    ];
+    // values saved for experience questions:
+    const [familiarityValues, setFamiliarityValues] = useState<Array<null | number>>(Array(familiarityQuestionPrompts.length).fill(null));
 
     // disable submit button so it cannot be clicked more than once
     const [submitting, setSubmitting] = useState(false);
@@ -197,17 +426,11 @@ const SignUp = () => {
     // verify user can submit
     const canSubmit = () => {
         // check for invalid elements and scroll to top element that is invalid
-        if (!name) {
-            document.getElementById('Name')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return false;
-        } else if (!stateEmail) {
+        if (!stateEmail) {
             document.getElementById('Email')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         } else if (!password) {
             document.getElementById('Password')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return false;
-        } else if (!participationReason) {
-            document.getElementById('ParticipationReason')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         } else if (!gender) {
             document.getElementById('Gender')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -215,20 +438,38 @@ const SignUp = () => {
         } else if (!age) {
             document.getElementById('Age')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
-        } else if (!residence) {
-            document.getElementById('Residence')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return false;
         } else if (ethnicity.length === 0) {
             document.getElementById('Ethnicity')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
-        } else if (isCollegeStudent && (!university || !degreeProgram || !yearsInProgram)) {
-            document.getElementById('IsCollegeStudent')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (!employer) {
+            document.getElementById('Employer')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
-        } else {
+        }  else if (!team) {
+            document.getElementById('Team')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }  else if (!title) {
+            document.getElementById('Title')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        } 
+
+
+        // else if (isCollegeStudent && (!university || !degreeProgram || !yearsInProgram)) {
+        //     document.getElementById('IsCollegeStudent')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        //     return false;
+        // } 
+        
+        else {
             // check all 7 point experience questions
             for (let i = 0; i < experienceValues.length; i++) {
                 if (experienceValues[i] === null) {
                     document.getElementById(experienceQuestions[i])?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return false;
+                }
+            }
+            // check all 7 point familiarity questions
+            for (let i = 0; i < familiarityValues.length; i++) {
+                if (familiarityValues[i] === null) {
+                    document.getElementById(familiarityQuestions[i])?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     return false;
                 }
             }
@@ -246,21 +487,40 @@ const SignUp = () => {
             const playerInformation = getObjectFromStorage('playerInformation');
             if (playerInformation) {
                 // stored education and specialization names:
-                const educationLevelsStored = ["highschoolEducation", "bachelorsEducation", "mastersEducation", "doctorateEducation", "otherEducation"];
-                const experienceQuestionsStored = ["riskAnalysisExperience", "supplierExperience", "proposalOrStatementOfWorkExperience", "bidsForRequestsExperience", "systemArchitectureExperience", "golfExperience", "systemsEngineeringExpertise",
-                    "statementOfWorkExpertise"];
-                setName(playerInformation.name);
+                const educationLevelsStored = ["bachelorsEducation", "mastersEducation", "doctorateEducation", "otherEducation"];
+
+                const specializationsStored = [
+                    "aerodynamicsSpecialization", "computerScienceSpecialization", "electricalEngineeringSpecialization",
+                    "electromagneticsSpecialization", "environmentalTestingSpecialization", "logisticsSpecialization",
+                    "manufacturingSpecialization", "mechanicalDesignSpecialization", "operationsResearchSpecialization",
+                    "projectManagementSpecialization", "systemsEngineeringSpecialization", "structuralAnalysisSpecialization",
+                    "threatAnalysisSpecialization", "otherSpecialization"
+                ]
+
+                const agenciesStored = [
+                    "shipyardAgency", "navseaAgency", "pnavAgency", "pentagonAgency",
+                    "nswcDahlgrenAgency", "nswcCarderockAgency", "otherAgency"
+                ]
+
+                const experienceQuestionsStored = ["riskAnalysisExperience", "supplierExperience"];
+
+                const familiarityQuestionsStored = [
+                    "projectContextFamiliarity", "navyPlatformFamiliarity", "designChangeCharacteristicsFamiliarity"
+                ]
+
                 setStateEmail(playerInformation.email);
                 setPassword(playerInformation.password);
-                setParticipationReason(playerInformation.participationReason);
                 setGender(playerInformation.gender);
                 setAge(playerInformation.age);
-                setResidence(playerInformation.residence);
                 setEthnicity(playerInformation.ethnicity ? playerInformation.ethnicity.split(', ') : []);
-                setIsCollegeStudent(playerInformation.isCollegeStudent);
-                if (playerInformation.university) setUniversity(playerInformation.university);
-                if (playerInformation.degreeProgram) setDegreeProgram(playerInformation.degreeProgram);
-                if (playerInformation.yearsInProgram) setYearsInProgram(playerInformation.yearsInProgram);
+                setEmployer(playerInformation.employer);
+                setTeam(playerInformation.team);
+                setTitle(playerInformation.title);
+
+                // setIsCollegeStudent(playerInformation.isCollegeStudent);
+                // if (playerInformation.university) setUniversity(playerInformation.university);
+                // if (playerInformation.degreeProgram) setDegreeProgram(playerInformation.degreeProgram);
+                // if (playerInformation.yearsInProgram) setYearsInProgram(playerInformation.yearsInProgram);
                 const newEducationalBackgroundCompleted = Array(educationLevels.length + 1).fill(0);
                 const newEducationalBackgroundSubjectArea = Array(educationLevels.length + 1).fill("N/A");
                 educationLevelsStored.forEach((educationLevel, index) => {
@@ -276,6 +536,30 @@ const SignUp = () => {
                 setEducationalBackgroundSubjectArea(newEducationalBackgroundSubjectArea);
                 if (playerInformation.otherEducationName) setOtherEducation(playerInformation.otherEducationName);
 
+                specializationsStored.forEach((specialization, index) => {
+                    if (playerInformation[specialization]) {
+                        const newSpecializationCompleted = [...specializationCompleted];
+                        newSpecializationCompleted[index] = true;
+                        setSpecializationCompleted(newSpecializationCompleted);
+                        const newSpecializationYears = [...specializationYears];
+                        newSpecializationYears[index] = playerInformation[specialization];
+                        setSpecializationYears(newSpecializationYears);
+                    }
+                });
+                if (playerInformation.otherSpecializationName) setOtherSpecialization(playerInformation.otherSpecializationName);
+
+                agenciesStored.forEach((agency, index) => {
+                    if (playerInformation[agency]) {
+                        const newAgenciesCompleted = [...agenciesCompleted];
+                        newAgenciesCompleted[index] = true;
+                        setAgenciesCompleted(newAgenciesCompleted);
+                        const newAgencyYears = [...agencyYears];
+                        newAgencyYears[index] = playerInformation[agency];
+                        setAgencyYears(newAgencyYears);
+                    }
+                });
+                if (playerInformation.otherNswcAgencyName) setOtherAgency (playerInformation.otherNswcAgencyName);
+
                 const newExperienceValues = [...experienceValues];
                 experienceQuestionsStored.forEach((experienceQuestion, index) => {
                     if (playerInformation[experienceQuestion]) {
@@ -284,10 +568,18 @@ const SignUp = () => {
                 });
                 setExperienceValues(newExperienceValues);
 
+                const newFamiliarityValues = [...familiarityValues];
+                familiarityQuestionsStored.forEach((familiarityQuestion, index) => {
+                    if (playerInformation[familiarityQuestion]) {
+                        newFamiliarityValues[index] = parseInt(playerInformation[familiarityQuestion]);
+                    }
+                });
+                setFamiliarityValues(newFamiliarityValues);
+
                 setPulledFromLocalStorage(true);
             }
         }
-    }, [pulledFromLocalStorage, experienceValues, educationLevels.length]);
+    }, [pulledFromLocalStorage, experienceValues, educationLevels.length, specializationCompleted, specializationYears, familiarityValues, agenciesCompleted, agencyYears]);
 
     const submit = async () => {
         // if successful give a happy message, otherwise let them know after an error from the backend
@@ -297,43 +589,80 @@ const SignUp = () => {
             if (canSubmit()) {
                 // save player information
                 const newPlayerInformation: PlayerInformation = {
-                    name,
+                    
                     email: stateEmail,
                     password,
-                    participationReason,
                     gender,
                     age,
-                    residence,
                     ethnicity: ethnicity.join(', '), // convert array to string
+                    employer,
+                    team,
+                    title,
 
-                    isCollegeStudent: isCollegeStudent,
-                    university,
-                    degreeProgram,
-                    yearsInProgram,
+                    // isCollegeStudent: isCollegeStudent,
+                    // university,
+                    // degreeProgram,
+                    // yearsInProgram,
 
-                    // TODO may be better to just send arrays? Instead of so many ungrouped fields for education levels and specializations ... 
+                    // TODO send as arrays
                     // All selected education values begin with "Yes:" or "Current:".
-                    highschoolEducation: educationalBackgroundCompleted[0] ?
-                        ((educationalBackgroundCompleted[0] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[0]) : undefined,
-                    bachelorsEducation: educationalBackgroundCompleted[1] ?
+                    bachelorsEducation: educationalBackgroundCompleted[0] ?
+                        ((educationalBackgroundCompleted[0] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[1]) : undefined,
+                    mastersEducation: educationalBackgroundCompleted[1] ?
                         ((educationalBackgroundCompleted[1] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[1]) : undefined,
-                    mastersEducation: educationalBackgroundCompleted[2] ?
+                    doctorateEducation: educationalBackgroundCompleted[2] ?
                         ((educationalBackgroundCompleted[2] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[2]) : undefined,
-                    doctorateEducation: educationalBackgroundCompleted[3] ?
-                        ((educationalBackgroundCompleted[3] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[3]) : undefined,
                     otherEducationName: educationalBackgroundCompleted[educationLevels.length] ? otherEducation : null,
                     otherEducation: educationalBackgroundCompleted[educationLevels.length]
                         ? ((educationalBackgroundCompleted[educationLevels.length] === 1 ? "Yes:" : "Current:")
                             + educationalBackgroundSubjectArea[educationLevels.length]) : undefined,
 
+                    // aerospaceEngineeringSpecialization: specializationCompleted[0] ? specializationYears[0] : null,
+                    // designSpecialization: specializationCompleted[1] ? specializationYears[1] : null,
+                    // electricalEngineeringSpecialization: specializationCompleted[2] ? specializationYears[2] : null,
+                    // industrialEngineeringSpecialization: specializationCompleted[3] ? specializationYears[3] : null,
+                    // manufacturingSpecialization: specializationCompleted[4] ? specializationYears[4] : null,
+                    // materialScienceSpecialization: specializationCompleted[5] ? specializationYears[5] : null,
+                    // mechanicalEngineeringSpecialization: specializationCompleted[6] ? specializationYears[6] : null,
+                    // projectManagementSpecialization: specializationCompleted[7] ? specializationYears[7] : null,
+                    // roboticsSpecialization: specializationCompleted[8] ? specializationYears[8] : null,
+                    // softwareSpecialization: specializationCompleted[9] ? specializationYears[9] : null,
+                    // systemsEngineeringSpecialization: specializationCompleted[10] ? specializationYears[10] : null,
+                    aerodynamicsSpecialization: specializationCompleted[0] ? specializationYears[0] : null,
+                    computerScienceSpecialization: specializationCompleted[1] ? specializationYears[1] : null,
+                    electricalEngineeringSpecialization: specializationCompleted[2] ? specializationYears[2] : null,
+                    electromagneticsSpecialization: specializationCompleted[3] ? specializationYears[3] : null,
+                    environmentalTestingSpecialization: specializationCompleted[4] ? specializationYears[4] : null,
+                    logisticsSpecialization: specializationCompleted[5] ? specializationYears[5] : null,
+                    manufacturingSpecialization: specializationCompleted[6] ? specializationYears[6] : null,
+                    mechanicalDesignSpecialization: specializationCompleted[7] ? specializationYears[7] : null,
+                    operationsResearchSpecialization: specializationCompleted[8] ? specializationYears[8] : null,
+                    projectManagementSpecialization: specializationCompleted[9] ? specializationYears[9] : null,
+                    systemsEngineeringSpecialization: specializationCompleted[10] ? specializationYears[10] : null,
+                    structuralAnalysisSpecialization: specializationCompleted[11] ? specializationYears[11] : null,
+                    threatAnalysisSpecialization: specializationCompleted[12] ? specializationYears[12] : null,
+                    otherSpecializationName: specializationCompleted[specializations.length] ? otherSpecialization : null,
+                    otherSpecialization: specializationCompleted[specializations.length]
+                        ? specializationYears[specializations.length] : null,
+
+                    //  Any shipyard, NAVSEA, PNAV, Pentagon, NSWC- Dahlgren Division, NSWC- Carderock Division, NSWC – Other (please specify),
+                    shipyardAgency: agenciesCompleted[0] ? agencyYears[0] : null,
+                    navseaAgency: agenciesCompleted[1] ? agencyYears[1] : null,
+                    pnavAgency: agenciesCompleted[2] ? agencyYears[2] : null,
+                    pentagonAgency: agenciesCompleted[3] ? agencyYears[3] : null,
+                    nswcDahlgrenAgency: agenciesCompleted[4] ? agencyYears[4] : null,
+                    nswcCarderockAgency: agenciesCompleted[5] ? agencyYears[5] : null,
+                    otherNswcAgencyName: agenciesCompleted[agencies.length] ? otherAgency : null,
+                    otherAgency: agenciesCompleted[agencies.length] ? agencyYears[agencies.length] : null,
+
+                    // experience 7 pointers
                     riskAnalysisExperience: '' + experienceValues[0],
                     supplierExperience: '' + experienceValues[1],
-                    proposalOrStatementOfWorkExperience: '' + experienceValues[2],
-                    bidsForRequestsExperience: '' + experienceValues[3],
-                    systemArchitectureExperience: '' + experienceValues[4],
-                    golfExperience: '' + experienceValues[5],
-                    systemsEngineeringExpertise: '' + experienceValues[6],
-                    statementOfWorkExpertise: '' + experienceValues[7],
+
+                    // familiarity 7 pointers
+                    projectContextFamiliarity: '' + familiarityValues[0],
+                    navyPlatformFamiliarity: '' + familiarityValues[1],
+                    designChangeCharacteristicsFamiliarity: '' + familiarityValues[2],
                 }
 
                 // Save to context whether a player is joining or hosting the session. The Player's unique playerId
@@ -344,7 +673,7 @@ const SignUp = () => {
 
                 // submit player information to backend
                 // const submitResult = await postRequest('player/host', JSON.stringify({ ...newPlayerBrief, ...newPlayerInformation }))
-                const submitResult = {success: true, email: 'test', isAdmin: false}
+                const submitResult = { success: true, email: 'test', isAdmin: false }
                 if (submitResult.success) {
                     setIsSuccessfullySubmitted(true);
                     setEmail(submitResult.email);
@@ -376,7 +705,7 @@ const SignUp = () => {
                         :
                         <div className='InputForm'>
                             <h3>All Asterisks are required</h3>
-                            <p className="FormTitle" id='Name' >
+                            {/* <p className="FormTitle" id='Name' >
                                 <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                                 Name
                             </p>
@@ -388,19 +717,20 @@ const SignUp = () => {
                                 onChange={(event) => {
                                     setName(event.target.value && event.target.value.length > 20 ? event.target.value.substring(0, 20) : event.target.value);
                                 }}
-                            />
-                            <p className="FormTitle" id='Usename' >
+                            /> */}
+                            <p className="FormTitle" id='Email' >
                                 <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                                 Email
                             </p>
                             <Input
-                                className={attemptedSubmit && !name ? "ErrorForm" : ""}
+                                className={attemptedSubmit && !stateEmail ? "ErrorForm" : ""}
                                 // TODO have a check to see if email is already taken
-                                placeholder='J-Doe'
-                                maxLength={20}
+                                placeholder='example@email.com'
+                                maxLength={100}
                                 value={stateEmail}
                                 onChange={(event) => {
-                                    setStateEmail(event.target.value && event.target.value.length > 20 ? event.target.value.substring(0, 20) : event.target.value);
+                                    const trimString = event.target.value.trim();
+                                    setStateEmail(trimString && trimString.length > 100 ? trimString.substring(0, 100) : trimString);
                                 }}
                             />
                             <p className="FormTitle" id='Password' >
@@ -408,33 +738,14 @@ const SignUp = () => {
                                 Password
                             </p>
                             <Input.Password
-                                className={attemptedSubmit && !name ? "ErrorForm" : ""}
-                                placeholder='1a2b3c4d'
-                                maxLength={40}
+                                className={attemptedSubmit && !password ? "ErrorForm" : ""}
+                                placeholder='Your Password Here'
+                                maxLength={100}
                                 minLength={6}
                                 value={password}
                                 onChange={(event) => {
-                                    setPassword(event.target.value && event.target.value.length > 20 ? event.target.value.substring(0, 40) : event.target.value);
-                                }}
-                            />
-                            <p className='FormTitle' id='ParticipationReason' >
-                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                Why are you interested in playing?
-                            </p>
-                            <Select
-                                className={attemptedSubmit && !participationReason ? "ErrorForm" : ""}
-                                defaultValue=""
-                                value={participationReason}
-                                options={[
-                                    { value: '', label: '' },
-                                    { value: 'Class activity', label: 'Class activity' },
-                                    { value: 'Leisure', label: 'Leisure' },
-                                    { value: 'Academic workshop', label: 'Academic workshop' },
-                                    { value: 'Professional training', label: 'Professional training' },
-                                    { value: 'Other', label: 'Other' },
-                                ]}
-                                onChange={(newValue) => {
-                                    setParticipationReason(newValue);
+                                    const trimString = event.target.value.trim();
+                                    setPassword(trimString && trimString.length > 100 ? trimString.substring(0, 100) : trimString);
                                 }}
                             />
                             <p className='FormTitle' id='Gender' >
@@ -469,25 +780,6 @@ const SignUp = () => {
                                 onChange={(e) => setAge(e)}
                                 addonAfter="Years Old"
                             />
-                            <p className='FormTitle' id='Residence' >
-                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                Country of Residence
-                            </p>
-                            <Select
-                                className={attemptedSubmit && !residence ? "ErrorForm" : ""}
-                                showSearch
-                                filterOption={(input: string, option?: { label: string; value: string }) =>
-                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
-                                defaultValue=""
-                                value={residence}
-                                options={
-                                    allCountriesArray.map((country) => { return { value: country, label: country } })
-                                }
-                                onChange={(newValue) => {
-                                    setResidence(newValue);
-                                }}
-                            />
-
                             <p className='FormTitle' id='Ethnicity' >
                                 <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                                 Ethnicity Identity (check all that apply):
@@ -510,9 +802,53 @@ const SignUp = () => {
                                 options={ethnicityOptions}
                             />
 
+                            <p className="FormTitle" id='Employer' >
+                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
+                                Which organization are you currently employed by?
+                            </p>
+                            <Input
+                                className={attemptedSubmit && !employer ? "ErrorForm" : ""}
+                                placeholder='Employer Name'
+                                maxLength={100}
+                                value={employer}
+                                onChange={(event) => {
+                                    const typedString = event.target.value;
+                                    setEmployer(typedString && typedString.length > 100 ? typedString.substring(0, 100) : typedString);
+                                }}
+                            />
+                            <p className="FormTitle" id='Team' >
+                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
+                                In which team are you working for?
+                            </p>
+                            <Input
+                                className={attemptedSubmit && !team ? "ErrorForm" : ""}
+                                placeholder='Team Name'
+                                maxLength={100}
+                                value={team}
+                                onChange={(event) => {
+                                    const typedString = event.target.value;
+                                    setTeam(typedString && typedString.length > 100 ? typedString.substring(0, 100) : typedString);
+                                }}
+                            />
+                            <p className="FormTitle" id='Title' >
+                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
+                                What is your official title?
+                            </p>
+                            <Input
+                                className={attemptedSubmit && !title ? "ErrorForm" : ""}
+                                placeholder='Your Title Here'
+                                maxLength={100}
+                                value={title}
+                                onChange={(event) => {
+                                    const typedString = event.target.value;
+                                    setTitle(typedString && typedString.length > 100 ? typedString.substring(0, 100) : typedString);
+                                }}
+                            />
+
+
                             <div className='PageBreak'></div>
 
-                            <p className='FormTitle' id='IsCollegeStudent' >
+                            {/* <p className='FormTitle' id='IsCollegeStudent' >
                                 <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                                 Are you currenlty a student in an undergraduate or graduate program?
                             </p>
@@ -566,13 +902,36 @@ const SignUp = () => {
                                 </div>
                             }
 
-                            <div className='PageBreak'></div>
+                            <div className='PageBreak'></div> */}
 
                             <p>Educational Background. Please fill in all of your degrees and / or certifications</p>
                             <Table
                                 // key={"" + educationalBackgroundCompleted + educationalBackgroundSubjectArea + otherEducation}
                                 dataSource={getEducationalBackgroundDataSource()}
                                 columns={educationalBackgroundColumns}
+                                pagination={false}
+                            />
+
+                            <div className='PageBreak'></div>
+
+                            <p>
+                                If you have ever worked in a technical organization, for each area of specialization,
+                                indicate your number of years of experience.
+                            </p>
+                            <Table
+                                dataSource={getSpecializationDataSource()}
+                                columns={specializationColumns}
+                                pagination={false}
+                            />
+
+                            <div className='PageBreak'></div>
+
+                            <p>
+                                Have you ever worked in any of the following Navy Agencies in a different capacity? Please check all that apply and indicate the number of years:
+                            </p>
+                            <Table
+                                dataSource={getAgenciesDataSource()}
+                                columns={agencyColumns}
                                 pagination={false}
                             />
 
@@ -640,6 +999,66 @@ const SignUp = () => {
                                     </div>
                                 ))
                             }
+
+{
+                                // show all familiarity questions
+                                familiarityValues.map((value, index) => (
+                                    <div key={index + " value of: " + value}>
+                                        <p id={familiarityQuestions[index]}>
+                                            <span style={{ color: 'red', fontSize: 'large' }}>* </span>
+                                            {familiarityQuestionPrompts[index]}
+                                        </p>
+                                        <div className={`ExpertiseGrid ${value === null
+                                            && attemptedSubmit ? "ErrorForm" : ""}`}>
+                                            <p>Not Familiar</p>
+                                            <p>.....</p>
+                                            <p>.....</p>
+                                            <p>Somewhat Familiar</p>
+                                            <p>.....</p>
+                                            <p>.....</p>
+                                            <p>Highly Familiar</p>
+
+                                            <Radio checked={value === 0} value={value === 0} onClick={() => {
+                                                const newValues = [...familiarityValues];
+                                                newValues[index] = 0;
+                                                setFamiliarityValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 1} value={value === 1} onClick={() => {
+                                                const newValues = [...familiarityValues];
+                                                newValues[index] = 1;
+                                                setFamiliarityValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 2} onClick={() => {
+                                                const newValues = [...familiarityValues];
+                                                newValues[index] = 2;
+                                                setFamiliarityValues(newValues);
+                                            }}></Radio>
+                                            <Radio checked={value === 3} onClick={() => {
+                                                const newValues = [...familiarityValues];
+                                                newValues[index] = 3;
+                                                setFamiliarityValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 4} onClick={() => {
+                                                const newValues = [...familiarityValues];
+                                                newValues[index] = 4;
+                                                setFamiliarityValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 5} onClick={() => {
+                                                const newValues = [...familiarityValues];
+                                                newValues[index] = 5;
+                                                setFamiliarityValues(newValues)
+                                            }}></Radio>
+                                            <Radio checked={value === 6} onClick={() => {
+                                                const newValues = [...familiarityValues];
+                                                newValues[index] = 6;
+                                                setFamiliarityValues(newValues)
+                                            }}></Radio>
+                                        </div>
+                                        <br />
+                                    </div>
+                                ))
+                            }
+
                             <div className='PageBreak'></div>
                             <br>
                             </br>

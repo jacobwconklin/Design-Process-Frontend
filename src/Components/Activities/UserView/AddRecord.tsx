@@ -1,10 +1,13 @@
-import { Button, InputNumber, Select } from 'antd';
+import { Button, InputNumber, Select, message } from 'antd';
 import './AddRecord.scss';
 import { useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
+import { Record } from '../../../Utils/Types';
 
 // AddRecord
-const AddRecord = (props: {}) => {
+const AddRecord = (props: {
+  addRecord: (record: Record) => void;
+}) => {
 
   // are they supposed to add as many as they want?
 
@@ -21,23 +24,37 @@ const AddRecord = (props: {}) => {
     { value: 'ran a simulation', label: 'ran a simulation ' },
     { value: 'Other', label: 'Other' },
   ]
+  
+  const [messageApi, contextHolder] = message.useMessage();
 
   const saveRecord = () => {
     setAttemptedSubmit(true);
     if (!activityType || !duration || !notes) {
       return;
     }
+
+    const newRecord: Record = {
+      entered: (new Date()).toISOString(),
+      type: activityType,
+      duration: duration,
+      notes: notes
+    }
     // save record to the database
-    alert('Record Saved');
+    messageApi.open({
+      type: 'success',
+      content: 'Record Saved',
+    });
     // clear the form
     setActivityType('');
     setDuration(0);
     setNotes('');
     setAttemptedSubmit(false);
+    props.addRecord(newRecord);
   }
 
   return (
     <div className="AddRecord ColumnFlex">
+      {contextHolder}
       <div className='Bubble'>
         <h2>Record a New Activity</h2>
         <p>Activity Type</p>
@@ -49,7 +66,7 @@ const AddRecord = (props: {}) => {
           options={activityTypes}
           onChange={(value) => setActivityType(value)}
         />
-        <p>Time Spent on Activity</p>
+        <p>Hours Spent on Activity</p>
         <InputNumber
           // input for duration in hours
           className={attemptedSubmit && !duration ? "ErrorForm" : ""}
@@ -61,7 +78,7 @@ const AddRecord = (props: {}) => {
         />
         <p>Brief Description of Activity</p>
         <TextArea
-          style={{maxWidth: '400px'}}
+          style={{ maxWidth: '400px' }}
           // input for notes
           className={attemptedSubmit && !notes ? "ErrorForm" : ""}
           autoSize={{ minRows: 3 }}
@@ -70,9 +87,9 @@ const AddRecord = (props: {}) => {
           value={notes}
           onChange={(event) => {
             setNotes(event.target.value && event.target.value.length > 240 ? event.target.value.substring(0, 240) : event.target.value);
-        }}
+          }}
         />
-        <br/>
+        <br />
         <Button
           onClick={() => saveRecord()}
         >

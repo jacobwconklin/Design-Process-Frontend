@@ -3,6 +3,7 @@
     padding-top: 30px;
 
     .Bubble {
+        min-width: 500px;
 
         .SuccessfulSubmit {
             display: flex;
@@ -68,6 +69,7 @@
             }
 
             .ant-input-number-group-wrapper, .ant-select, .ant-input, .ant-picker, .ant-color-picker-trigger, .ant-input-affix-wrapper {
+                width: 100%;
                 max-width: 400px;
                 border: 1px solid black;
             }

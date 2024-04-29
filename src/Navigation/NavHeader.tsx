@@ -6,6 +6,7 @@ import { UserContext } from '../App';
 import { UserContextType } from '../Utils/Types';
 import { UserOutlined } from '@ant-design/icons';
 import { clearObjectFromStorage } from '../Utils/Utils';
+import { Button, Tooltip } from 'antd';
 // import { postRequest } from '../Utils/Api';
 // import { clearObjectFromStorage } from '../Utils/Utils';
 
@@ -22,7 +23,7 @@ const NavHeader = () => {
             <div
                 className='HeaderContainer Clickable'
                 onClick={() => {
-                    if (window.location.pathname !== '/') {
+                    if (email) {
                         setShowReturnHomeModal(true)
                     } else {
                         window.location.reload();
@@ -34,7 +35,21 @@ const NavHeader = () => {
                 {/*<img className='HeaderLogo' src={stselabGamesLogo} alt='Stselab games logo: a golfball in a gear' />*/}
 
             </div>
-            <UserOutlined />
+            
+            <Tooltip title={email ? "Log Out" : "Log In" } placement="left">
+                <Button
+                    className='UserIconButton'
+                    onClick={() => {
+                        if (email) {
+                            setShowReturnHomeModal(true)
+                        } else {
+                            navigate('/login');
+                        }
+                    }}
+                >
+                    <UserOutlined />
+                </Button>
+            </Tooltip>
             {/* <div className='UserIcon'>{ username ? username.substring(0, 1).toUpperCase() : "Log In"}</div> */}
             {
                 // if player is in an ongoing session, will want to ask them if they are sure they want to return home as it will cause 
@@ -44,14 +59,14 @@ const NavHeader = () => {
                     title='Would you like to log out?'
                     message='Logging out will require you to log back in next time you wish to record an activity. Are you sure you want to log out?'
                     confirm={() => {
-                    // removes player if they navigate away from game
-                    if (email) {
-                        // TODO log out 
-                        setEmail('');
-                        setAuthToken('');
-                        setIsAdmin(false);
-                        clearObjectFromStorage('loginInformation');
-                    }
+                        // removes player if they navigate away from game
+                        if (email) {
+                            // TODO log out 
+                            setEmail('');
+                            setAuthToken('');
+                            setIsAdmin(false);
+                            clearObjectFromStorage('loginInformation');
+                        }
                         navigate('/')
                     }}
                     cancel={() => setShowReturnHomeModal(false)}
