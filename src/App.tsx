@@ -10,7 +10,9 @@ function App() {
   // Context will hold this information to be accessible from anywhere in the App
   const [isAdmin, setIsAdmin] = useState(false);
   // Determines if user is logged in
-  const [username, setUsername] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  // auth token returned from backend in place of storing the user's actual password
+  const [authToken, setAuthToken] = useState<string | null>(null);
 
   return (
     <div className="App">
@@ -18,9 +20,11 @@ function App() {
         <UserContext.Provider
           value={{
             isAdmin, setIsAdmin,
-            username, setUsername
+            email, setEmail,
+            authToken, setAuthToken
           }}
         >
+          <div className='StaticBackground'></div>
           <Router />
           <NavHeader />
         </UserContext.Provider>
@@ -34,8 +38,10 @@ function App() {
 export const UserContext = createContext<UserContextType>({
   isAdmin: false,
   setIsAdmin: (isAdmin: boolean) => { },
-  username: null,
-  setUsername: (username: string) => { },
+  email: null,
+  setEmail: (email: string) => { },
+  authToken: null,
+  setAuthToken: (authToken: string) => { }
 });
 
 export default App;

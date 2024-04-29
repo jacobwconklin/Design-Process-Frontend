@@ -1,3 +1,5 @@
+@use '../StyleVariables' as sv;
+
 .NavHeader {
     position: fixed;
     top: 0;
@@ -8,7 +10,8 @@
     height: 60px;
     align-items: center;
     // background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgb(89, 73, 66) 50%, rgb(42, 34, 24) 100%);
+    // background: linear-gradient(90deg, rgba(2,0,36,1) 0%, sv.$primary 50%, rgba(2,0,36,1) 100%);
+    background: sv.$primary;
     // background-color: darkblue;
     box-shadow: inset 0px 0px 2px 4px rgba(0, 0, 0, 0.2);
     color: white;

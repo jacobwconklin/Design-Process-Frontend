@@ -4,6 +4,8 @@ import VerificationModal from '../Reusable/VerificationModal';
 import { useContext, useState } from 'react';
 import { UserContext } from '../App';
 import { UserContextType } from '../Utils/Types';
+import { UserOutlined } from '@ant-design/icons';
+import { clearObjectFromStorage } from '../Utils/Utils';
 // import { postRequest } from '../Utils/Api';
 // import { clearObjectFromStorage } from '../Utils/Utils';
 
@@ -12,7 +14,7 @@ const NavHeader = () => {
 
     const navigate = useNavigate();
     const [showReturnHomeModal, setShowReturnHomeModal] = useState(false);
-    const { username } = useContext(UserContext) as UserContextType;
+    const { email, setEmail, setAuthToken, setIsAdmin } = useContext(UserContext) as UserContextType;
 
     return (
         <div className='NavHeader top-font'>
@@ -32,7 +34,8 @@ const NavHeader = () => {
                 {/*<img className='HeaderLogo' src={stselabGamesLogo} alt='Stselab games logo: a golfball in a gear' />*/}
 
             </div>
-            <div className='UserIcon'>{ username ? username.substring(0, 1).toUpperCase() : "Log In"}</div>
+            <UserOutlined />
+            {/* <div className='UserIcon'>{ username ? username.substring(0, 1).toUpperCase() : "Log In"}</div> */}
             {
                 // if player is in an ongoing session, will want to ask them if they are sure they want to return home as it will cause 
                 // them to leave their session. Do this via the verification modal.
@@ -42,8 +45,12 @@ const NavHeader = () => {
                     message='Logging out will require you to log back in next time you wish to record an activity. Are you sure you want to log out?'
                     confirm={() => {
                     // removes player if they navigate away from game
-                    if (username) {
-                        // TODO log out
+                    if (email) {
+                        // TODO log out 
+                        setEmail('');
+                        setAuthToken('');
+                        setIsAdmin(false);
+                        clearObjectFromStorage('loginInformation');
                     }
                         navigate('/')
                     }}

@@ -1,0 +1,16 @@
+.NewComponent {
+    opacity: 1;
+}
+
+.ant-input-number-group-wrapper, .ant-select, .ant-input, .ant-picker, .ant-color-picker-trigger, .ant-input-affix-wrapper {
+    max-width: 400px;
+    width: 80%;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+// Handle error designs
+.ErrorForm {
+    border: 1px solid red;
+    
+}
