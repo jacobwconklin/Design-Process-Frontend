@@ -3,7 +3,41 @@
     padding-bottom: 20px;
     // border-radius: 8px;
 
-    h3 {
-        margin-bottom: 2px;
+    .ActivityTitle {
+        justify-content: center;
+        gap: 15px;
+    }
+
+    p {
+        padding-top: 20px;
+        width: 80%;
+        max-width: 400px;
+        text-align: left;
+    }
+
+
+    .PointScaleBox {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 5px;
+        align-items: end;
+        justify-items: center;
+        border: 1px solid black;
+        border-radius: 8px;
+        margin: 0px 5px 0px 5px;
+        background-color: white;
+        padding: 15px;
+        p {
+            text-align: center;
+
+        }
+
+        .ant-radio-wrapper {
+            margin: 0px;
+        }
+    }
+    
+    .ErrorForm {
+        border: 1px solid red;
     }
 }

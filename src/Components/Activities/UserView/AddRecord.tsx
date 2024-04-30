@@ -1,10 +1,10 @@
-import { Button, DatePicker, InputNumber, Select, message } from 'antd';
+import { Button, DatePicker, Select, message } from 'antd';
 import './AddRecord.scss';
-import { useState } from 'react';
-import TextArea from 'antd/es/input/TextArea';
-import { Activity } from '../../../Utils/Types';
+import { useContext, useState } from 'react';
+import { Activity, MeasurementPeriod, UserContextType } from '../../../Utils/Types';
 import OneActivity from './OneActivity';
-import { activityTypes } from '../../../Utils/Utils';
+import { activityTypes, tasks } from '../../../Utils/Utils';
+import { UserContext } from '../../../App';
 
 // AddRecord adds an entire measurement period for the user with all of its new activities and ther details. It ensures
 // the information is sent and saved to the database. 
@@ -14,34 +14,77 @@ const AddRecord = () => {
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [attemptedSubmit, setAttemptedSubmit] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
   const [messageApi, contextHolder] = message.useMessage();
 
+  const { email } = useContext(UserContext) as UserContextType;
+
+  const onRangeChange = (dates: null | any, dateStrings: string[]) => {
+    if (dates) {
+      setStartDate(dateStrings[0]);
+      setEndDate(dateStrings[1]);
+    }
+  };
   
 
   const saveActivity = () => {
+    setLoading(true);
     setAttemptedSubmit(true);
     // loop through all activities checking if they have all the required fields,
     // if not make an error message pop up like the success message.
-    // if (!activityType || !duration || !notes) {
-    //   return;
-    // }
-
-    // const newActivity: Activity = {
-    //   entered: (new Date()).toISOString(),
-    //   type: activityType,
-    //   duration: duration,
-    //   notes: notes
-    // }
-    // // save activity to the database
-    messageApi.open({
-      type: 'success',
-      content: 'Measurement Period and Activities Saved',
+    let completedAllActivities = true;
+    activities.forEach((activity) => {
+      if (
+        !activity.duration || !activity.question1 || !activity.question2 || 
+        (!activity.question3 && (activity.type === tasks[2] || activity.type === tasks[3] || activity.type === tasks[5])) || 
+        (!activity.pointScale && (activity.type === tasks[3] || activity.type === tasks[4] || activity.type === tasks[5])) ||
+        !endDate || !startDate
+      ) {
+        completedAllActivities = false;
+      }
     });
-    // clear the form
-    setActivities([]);
-    setAttemptedSubmit(false);
-    // props.addRecord(newRecord);
+    if (!completedAllActivities) {
+      messageApi.open({
+        type: 'error',
+        content: 'Please fill out all fields for all activities and Measurement Period',
+      });
+      setLoading(false);
+      return;
+    } else {
+      // save all activities to the database
+      activities.forEach((activity) => {
+        const newActivity: Activity = {
+          type: activity.type,
+          duration: activity.duration,
+          question1: activity.question1,
+          question2: activity.question2,
+          question3: activity.question3,
+          pointScale: activity.pointScale,
+        }
+        // save activity to the database
+
+      });
+      // save the measurement period to the database
+      const newRecord: MeasurementPeriod = {
+        startDate: startDate,
+        endDate: endDate,
+        email: email ? email : undefined,
+        entered: new Date().toISOString(),
+      }
+      // save the measurement period to the database
+
+      messageApi.open({
+        type: 'success',
+        content: 'Measurement Period and Activities Saved',
+      });
+      // clear the form
+      setActivities([]);
+      setAttemptedSubmit(false);
+      setLoading(false);
+    }
   }
 
   const getTotalHours = () => {
@@ -52,7 +95,7 @@ const AddRecord = () => {
     <div className="AddRecord ColumnFlex">
       {contextHolder}
       <div className='Bubble'>
-        <h2>Record All New Activities for the Measurement Period</h2>
+        <h1>Record All New Activities for the Measurement Period</h1>
         <p>
           Remember Measuring Periods are from Monday to Wednesday and from Thursday to Friday. There are typically 24 work hours between Monday and Wednesday and 16 work hours between Thursday and Friday.
         </p>
@@ -95,7 +138,10 @@ const AddRecord = () => {
         </div>
         <br />
         <p>Select Dates of Measurement Period</p>
-        <DatePicker.RangePicker />
+        <DatePicker.RangePicker
+          className={attemptedSubmit && (!startDate || !endDate) ? "ErrorForm" : ""}
+          onChange={onRangeChange}
+        />
         <h3>Total Hours Recorded: {getTotalHours()}</h3>
         <Button
           style={{ minHeight: '50px' }}

@@ -5,8 +5,7 @@ import './UserView.scss';
 const UserView = (props: {}) => {
 
   return (
-    <div className="UserView ColumnFlex">
-      <h1>User View</h1>
+    <div className="UserView ColumnFlex Top">
       <AddRecord />
       {/* <ExistingRecords records={records} /> */}
     </div>
