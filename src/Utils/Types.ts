@@ -9,7 +9,6 @@ export interface UserContextType {
 
 // All information for players obtained from the registration form
 export interface PlayerInformation {
-    id?: string;
     email: string;
     password: string;
     gender: string;
@@ -85,7 +84,6 @@ export interface MeasurementPeriod {
 
 // holds information about a single activity record
 export interface Activity {
-    email?: string;
     type: string;
     duration: number;
     question1: string;

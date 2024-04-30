@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../App';
 import { UserContextType } from '../../Utils/Types';
+import { postRequest } from '../../Utils/Api';
 
 // Login
 const Login = (props: {}) => {
@@ -15,16 +16,25 @@ const Login = (props: {}) => {
     const [stateEmail, setStateEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const login = () => {
+    const login = async () => {
         // TODO- make API call to login
         // if successful, set context values and navigate to activities
         // if not, display error message
-        const loginResult = {success: true, token: '1234', isAdmin: stateEmail ==='admin' ? true :  false};
-        if (loginResult.success) {
-            setIsAdmin(loginResult.isAdmin);
-            setEmail(stateEmail);
-            setAuthToken(loginResult.token);
-            navigate('/activities');
+        // const loginResult = {success: true, token: '1234', isAdmin: stateEmail ==='admin' ? true :  false};
+        try {
+            const loginResult = await postRequest('navydp/checkLogin', JSON.stringify({email: stateEmail, password: password}))
+            if (loginResult.success) {
+                setIsAdmin(stateEmail ==='admin');
+                setEmail(stateEmail);
+                setAuthToken('TODO');
+                navigate('/activities');
+            } else if (loginResult.error === 'User not found') {
+                alert("Login Failed. Check Username and Password are Correct.")
+            } else {
+                console.error("Error logging in", loginResult);
+            }
+        } catch (error) {
+            console.error("Error logging in", error);
         }
     }
 

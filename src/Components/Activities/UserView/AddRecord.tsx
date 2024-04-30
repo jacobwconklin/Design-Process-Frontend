@@ -5,6 +5,7 @@ import { Activity, MeasurementPeriod, UserContextType } from '../../../Utils/Typ
 import OneActivity from './OneActivity';
 import { activityTypes, tasks } from '../../../Utils/Utils';
 import { UserContext } from '../../../App';
+import { postRequest } from '../../../Utils/Api';
 
 // AddRecord adds an entire measurement period for the user with all of its new activities and ther details. It ensures
 // the information is sent and saved to the database. 
@@ -28,9 +29,9 @@ const AddRecord = () => {
       setEndDate(dateStrings[1]);
     }
   };
-  
 
-  const saveActivity = () => {
+
+  const saveActivity = async () => {
     setLoading(true);
     setAttemptedSubmit(true);
     // loop through all activities checking if they have all the required fields,
@@ -38,8 +39,8 @@ const AddRecord = () => {
     let completedAllActivities = true;
     activities.forEach((activity) => {
       if (
-        !activity.duration || !activity.question1 || !activity.question2 || 
-        (!activity.question3 && (activity.type === tasks[2] || activity.type === tasks[3] || activity.type === tasks[5])) || 
+        !activity.duration || !activity.question1 || !activity.question2 ||
+        (!activity.question3 && (activity.type === tasks[2] || activity.type === tasks[3] || activity.type === tasks[5])) ||
         (!activity.pointScale && (activity.type === tasks[3] || activity.type === tasks[4] || activity.type === tasks[5])) ||
         !endDate || !startDate
       ) {
@@ -55,6 +56,7 @@ const AddRecord = () => {
       return;
     } else {
       // save all activities to the database
+      const allActivities: Activity[] = []
       activities.forEach((activity) => {
         const newActivity: Activity = {
           type: activity.type,
@@ -64,26 +66,37 @@ const AddRecord = () => {
           question3: activity.question3,
           pointScale: activity.pointScale,
         }
-        // save activity to the database
-
+        allActivities.push(newActivity);
       });
-      // save the measurement period to the database
+      // save the measurement period
       const newRecord: MeasurementPeriod = {
         startDate: startDate,
         endDate: endDate,
         email: email ? email : undefined,
         entered: new Date().toISOString(),
       }
-      // save the measurement period to the database
-
-      messageApi.open({
-        type: 'success',
-        content: 'Measurement Period and Activities Saved',
-      });
-      // clear the form
-      setActivities([]);
-      setAttemptedSubmit(false);
-      setLoading(false);
+      // save activities and measurement period to the database
+      const result = await postRequest("/navydp/saveNewMeasurementPeriod", JSON.stringify({
+        activities: allActivities,
+        ...newRecord
+      }));
+      if (result.success) {
+        messageApi.open({
+          type: 'success',
+          content: 'Measurement Period and Activities Saved',
+        });
+        // clear the form
+        setActivities([]);
+        setAttemptedSubmit(false);
+        setLoading(false);
+      } else {
+        console.error(result);
+        messageApi.open({
+          type: 'error',
+          content: 'Error Saving Measurement Period and Activities',
+        });
+        setLoading(false);
+      }
     }
   }
 
@@ -147,6 +160,7 @@ const AddRecord = () => {
           style={{ minHeight: '50px' }}
           onClick={() => saveActivity()}
           type='primary'
+          disabled={loading}
         >
           Save All Activities for the Measurement Period
         </Button>

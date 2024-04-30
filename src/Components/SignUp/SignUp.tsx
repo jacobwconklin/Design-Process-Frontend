@@ -14,6 +14,7 @@ import { PlayerInformation, UserContextType } from '../../Utils/Types';
 import { UserContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import { getObjectFromStorage, saveObjectToStorage } from '../../Utils/Utils';
+import { postRequest } from '../../Utils/Api';
 
 // SignUp
 const SignUp = () => {
@@ -628,32 +629,32 @@ const SignUp = () => {
                     // roboticsSpecialization: specializationCompleted[8] ? specializationYears[8] : null,
                     // softwareSpecialization: specializationCompleted[9] ? specializationYears[9] : null,
                     // systemsEngineeringSpecialization: specializationCompleted[10] ? specializationYears[10] : null,
-                    aerodynamicsSpecialization: specializationCompleted[0] ? specializationYears[0] : null,
-                    computerScienceSpecialization: specializationCompleted[1] ? specializationYears[1] : null,
-                    electricalEngineeringSpecialization: specializationCompleted[2] ? specializationYears[2] : null,
-                    electromagneticsSpecialization: specializationCompleted[3] ? specializationYears[3] : null,
-                    environmentalTestingSpecialization: specializationCompleted[4] ? specializationYears[4] : null,
-                    logisticsSpecialization: specializationCompleted[5] ? specializationYears[5] : null,
-                    manufacturingSpecialization: specializationCompleted[6] ? specializationYears[6] : null,
-                    mechanicalDesignSpecialization: specializationCompleted[7] ? specializationYears[7] : null,
-                    operationsResearchSpecialization: specializationCompleted[8] ? specializationYears[8] : null,
-                    projectManagementSpecialization: specializationCompleted[9] ? specializationYears[9] : null,
-                    systemsEngineeringSpecialization: specializationCompleted[10] ? specializationYears[10] : null,
-                    structuralAnalysisSpecialization: specializationCompleted[11] ? specializationYears[11] : null,
-                    threatAnalysisSpecialization: specializationCompleted[12] ? specializationYears[12] : null,
+                    aerodynamicsSpecialization: specializationCompleted[0] ? specializationYears[0] : 0,
+                    computerScienceSpecialization: specializationCompleted[1] ? specializationYears[1] : 0,
+                    electricalEngineeringSpecialization: specializationCompleted[2] ? specializationYears[2] : 0,
+                    electromagneticsSpecialization: specializationCompleted[3] ? specializationYears[3] : 0,
+                    environmentalTestingSpecialization: specializationCompleted[4] ? specializationYears[4] : 0,
+                    logisticsSpecialization: specializationCompleted[5] ? specializationYears[5] : 0,
+                    manufacturingSpecialization: specializationCompleted[6] ? specializationYears[6] : 0,
+                    mechanicalDesignSpecialization: specializationCompleted[7] ? specializationYears[7] : 0,
+                    operationsResearchSpecialization: specializationCompleted[8] ? specializationYears[8] : 0,
+                    projectManagementSpecialization: specializationCompleted[9] ? specializationYears[9] : 0,
+                    systemsEngineeringSpecialization: specializationCompleted[10] ? specializationYears[10] : 0,
+                    structuralAnalysisSpecialization: specializationCompleted[11] ? specializationYears[11] : 0,
+                    threatAnalysisSpecialization: specializationCompleted[12] ? specializationYears[12] : 0,
                     otherSpecializationName: specializationCompleted[specializations.length] ? otherSpecialization : null,
                     otherSpecialization: specializationCompleted[specializations.length]
-                        ? specializationYears[specializations.length] : null,
+                        ? specializationYears[specializations.length] : 0,
 
                     //  Any shipyard, NAVSEA, OPNAV, Pentagon, NSWC- Dahlgren Division, NSWC- Carderock Division, NSWC – Other (please specify),
-                    shipyardAgency: agenciesCompleted[0] ? agencyYears[0] : null,
-                    navseaAgency: agenciesCompleted[1] ? agencyYears[1] : null,
-                    opnavAgency: agenciesCompleted[2] ? agencyYears[2] : null,
-                    pentagonAgency: agenciesCompleted[3] ? agencyYears[3] : null,
-                    nswcDahlgrenAgency: agenciesCompleted[4] ? agencyYears[4] : null,
-                    nswcCarderockAgency: agenciesCompleted[5] ? agencyYears[5] : null,
+                    shipyardAgency: agenciesCompleted[0] ? agencyYears[0] : 0,
+                    navseaAgency: agenciesCompleted[1] ? agencyYears[1] : 0,
+                    opnavAgency: agenciesCompleted[2] ? agencyYears[2] : 0,
+                    pentagonAgency: agenciesCompleted[3] ? agencyYears[3] : 0,
+                    nswcDahlgrenAgency: agenciesCompleted[4] ? agencyYears[4] : 0,
+                    nswcCarderockAgency: agenciesCompleted[5] ? agencyYears[5] : 0,
                     otherNswcAgencyName: agenciesCompleted[agencies.length] ? otherAgency : null,
-                    otherAgency: agenciesCompleted[agencies.length] ? agencyYears[agencies.length] : null,
+                    otherAgency: agenciesCompleted[agencies.length] ? agencyYears[agencies.length] : 0,
 
                     // experience 7 pointers
                     riskAnalysisExperience: '' + experienceValues[0],
@@ -672,16 +673,23 @@ const SignUp = () => {
                 saveObjectToStorage('playerInformation', newPlayerInformation);
 
                 // submit player information to backend
-                // const submitResult = await postRequest('player/host', JSON.stringify({ ...newPlayerBrief, ...newPlayerInformation }))
-                const submitResult = { success: true, email: 'test', isAdmin: false }
+                const submitResult = await postRequest('/navydp/saveNewUser', JSON.stringify(newPlayerInformation));
+                // const submitResult = { success: true, email: 'test', isAdmin: false }
+
                 if (submitResult.success) {
                     setIsSuccessfullySubmitted(true);
-                    setEmail(submitResult.email);
-                    setIsAdmin(submitResult.isAdmin);
+                    setEmail(stateEmail);
+                    setIsAdmin(false);
                     // save loginInformation to local storage
                     const loginInformation = { email: submitResult.email, isAdmin: submitResult.isAdmin }
                     saveObjectToStorage('loginInformation', loginInformation);
                     navigate('/activities');
+                } else if (submitResult.exception.includes("Duplicate entry")) {
+                    alert("Email is already associated with an account. Please use a different email address.");
+                    setSubmitting(false);
+                } else {
+                    console.error("Error submitting form: ", submitResult);
+                    setSubmitting(false);
                 }
             } else {
                 setSubmitting(false);

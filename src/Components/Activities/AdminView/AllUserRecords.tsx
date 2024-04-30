@@ -1,11 +1,11 @@
 import { Table } from 'antd';
 import './AllUserRecords.scss';
-import { Activity } from '../../../Utils/Types';
+import { MeasurementPeriod } from '../../../Utils/Types';
 
 // AllUserRecords
 // TODO- NOT a priority, focus rn is on adding new records 
 const AllUserRecords = (props: {
-    activities: Array<Activity>
+    periods: Array<MeasurementPeriod>
 }) => {
 
     const columns = [
@@ -15,35 +15,24 @@ const AllUserRecords = (props: {
             key: 'email',
         },
         {
-            title: 'Activity Type',
-            dataIndex: 'type',
-            key: 'type',
+            title: 'Start Date',
+            dataIndex: 'startDate',
+            key: 'startDate',
         },
         {
-            title: 'Duration in Hours',
-            dataIndex: 'duration',
-            key: 'duration',
+            title: 'End Date',
+            dataIndex: 'endDate',
+            key: 'endDate',
         },
-        {
-            title: 'Question 1',
-            dataIndex: 'q1',
-            key: 'q1',
-        },
-        {
-            title: 'Question 2',
-            dataIndex: 'q2',
-            key: 'q2',
-        }
     ];
 
-    const tableData = props.activities.map((record: Activity, index: number) => {
+    const tableData = props.periods.map((period: any, index: number) => {
+        console.log(period);
         return {
             key: index,
-            email: record.email,
-            type: record.type,
-            duration: record.duration,
-            q1: record.question1,
-            q2: record.question2
+            email: period.Email,
+            startDate: period.StartDate,
+            endDate: period.EndDate,
         }
     })
 
@@ -56,7 +45,7 @@ const AllUserRecords = (props: {
                     columns={columns}
                     dataSource={tableData}
                     pagination={{
-                        position: ['none', props.activities.length > 10 ? 'bottomCenter' : "none"],
+                        position: ['none', props.periods.length > 10 ? 'bottomCenter' : "none"],
                         showSizeChanger: true,
                         defaultPageSize: 10,
                     }}
