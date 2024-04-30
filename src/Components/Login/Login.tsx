@@ -40,7 +40,7 @@ const Login = (props: {}) => {
             />
             <br/>
             <p>Password:</p>
-            <Input 
+            <Input.Password 
                 placeholder='Your Password here'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

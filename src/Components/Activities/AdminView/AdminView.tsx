@@ -1,15 +1,14 @@
 import { useState } from 'react';
-import { Record } from '../../../Utils/Types';
+import { Activity, MeasurementPeriod } from '../../../Utils/Types';
 import './AdminView.scss';
 import { tempFakeAdminRecords } from '../../../Utils/TempFakeData';
 import AllUserRecords from './AllUserRecords';
-import { Button } from 'antd';
 
 // AdminView
 const AdminView = (props: {}) => {
 
     // will pull these from database, and re-pull after user adds a new record
-    const [records, setRecords] = useState<Array<Record>>(tempFakeAdminRecords);
+    const [activities, setActivities] = useState<Array<MeasurementPeriod>>(tempFakeAdminRecords);
 
     // TODO pull records from database with use effect
 
@@ -23,7 +22,7 @@ const AdminView = (props: {}) => {
             <li>Show users with fewest records?</li>
         </ul>
       </div>
-      <AllUserRecords records={records} />
+      {/* <AllUserRecords activities={activities} /> */}
     </div>
   );
 };

@@ -57,7 +57,7 @@ const SignUp = () => {
     /**
      * Information for Table for gathering Educational Background
      */
-    const educationLevels = ["Highschool", "Bachelors", "Masters", "Doctorate"]
+    const educationLevels = ["Bachelors", "Masters", "Doctorate"]
 
     const [educationalBackgroundCompleted, setEducationalBackgroundCompleted] = useState(Array(educationLevels.length + 1).fill(0));
     const [educationalBackgroundSubjectArea, setEducationalBackgroundSubjectArea] = useState(Array(educationLevels.length + 1).fill('N/A'));
@@ -281,10 +281,10 @@ const SignUp = () => {
 
     /**
      * Information for Table for gathering Navy Agency years of work experience
-     * Any shipyard, NAVSEA, PNAV, Pentagon, NSWC- Dahlgren Division, NSWC- Carderock Division, NSWC – Other (please specify),
+     * Any shipyard, NAVSEA, OPNAV, Pentagon, NSWC- Dahlgren Division, NSWC- Carderock Division, NSWC – Other (please specify),
      */
     const agencies = [
-        "Any shipyard", "NAVSEA", "PNAV", "Pentagon", "NSWC - Dahlgren Division", "NSWC - Carderock Division", "NSWC - Other (please specify)"
+        "Any shipyard", "NAVSEA", "OPNAV", "Pentagon", "NSWC - Dahlgren Division", "NSWC - Carderock Division"
     ];
 
     const [agenciesCompleted, setAgenciesCompleted] = useState(Array(agencies.length + 1).fill(0));
@@ -329,7 +329,7 @@ const SignUp = () => {
         dataSourceArray.push({
             key: agencies.length,
             Agency: <div>
-                <p>Other (Please Specify)</p>
+                <p>NSWC - Other (Please Specify)</p>
                 <Input
                     value={otherAgency}
                     onChange={(e) => setOtherAgency(e.target.value)}
@@ -498,7 +498,7 @@ const SignUp = () => {
                 ]
 
                 const agenciesStored = [
-                    "shipyardAgency", "navseaAgency", "pnavAgency", "pentagonAgency",
+                    "shipyardAgency", "navseaAgency", "opnavAgency", "pentagonAgency",
                     "nswcDahlgrenAgency", "nswcCarderockAgency", "otherAgency"
                 ]
 
@@ -645,10 +645,10 @@ const SignUp = () => {
                     otherSpecialization: specializationCompleted[specializations.length]
                         ? specializationYears[specializations.length] : null,
 
-                    //  Any shipyard, NAVSEA, PNAV, Pentagon, NSWC- Dahlgren Division, NSWC- Carderock Division, NSWC – Other (please specify),
+                    //  Any shipyard, NAVSEA, OPNAV, Pentagon, NSWC- Dahlgren Division, NSWC- Carderock Division, NSWC – Other (please specify),
                     shipyardAgency: agenciesCompleted[0] ? agencyYears[0] : null,
                     navseaAgency: agenciesCompleted[1] ? agencyYears[1] : null,
-                    pnavAgency: agenciesCompleted[2] ? agencyYears[2] : null,
+                    opnavAgency: agenciesCompleted[2] ? agencyYears[2] : null,
                     pentagonAgency: agenciesCompleted[3] ? agencyYears[3] : null,
                     nswcDahlgrenAgency: agenciesCompleted[4] ? agencyYears[4] : null,
                     nswcCarderockAgency: agenciesCompleted[5] ? agencyYears[5] : null,

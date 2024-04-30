@@ -52,3 +52,17 @@ export const clearObjectFromStorage = (key: string) => {
     sessionStorage.removeItem(key);
     localStorage.removeItem(key);
 }
+
+// prompts for adding new activity records:
+export const tasks = [
+    "I conducted an analysis using a mathematical/analytical model.",
+    "I retrieved knowledge by doing research, data collection, or testing",
+    "I waited for new information (and in parallel worked on another activity not related to this project).",
+    "I updated an existing analytical/mathematical model based on new information.",
+    "I analyzed some new information that I received.",
+    "I shared new information or data with colleagues."
+  ];
+
+export const activityTypes = [{ value: '', label: '' }].concat(tasks.map(task => {
+    return { value: task, label: task }
+  }))

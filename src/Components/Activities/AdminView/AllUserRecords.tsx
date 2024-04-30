@@ -1,11 +1,11 @@
 import { Table } from 'antd';
 import './AllUserRecords.scss';
-import { Record } from '../../../Utils/Types';
+import { Activity } from '../../../Utils/Types';
 
 // AllUserRecords
 // TODO- NOT a priority, focus rn is on adding new records 
 const AllUserRecords = (props: {
-    records: Array<Record>
+    activities: Array<Activity>
 }) => {
 
     const columns = [
@@ -25,25 +25,25 @@ const AllUserRecords = (props: {
             key: 'duration',
         },
         {
-            title: 'Notes',
-            dataIndex: 'notes',
-            key: 'notes',
+            title: 'Question 1',
+            dataIndex: 'q1',
+            key: 'q1',
         },
         {
-            title: 'Date Entered',
-            dataIndex: 'entered',
-            key: 'entered',
+            title: 'Question 2',
+            dataIndex: 'q2',
+            key: 'q2',
         }
     ];
 
-    const tableData = props.records.map((record: Record, index: number) => {
+    const tableData = props.activities.map((record: Activity, index: number) => {
         return {
             key: index,
             email: record.email,
             type: record.type,
             duration: record.duration,
-            notes: record.notes,
-            entered: record.entered
+            q1: record.question1,
+            q2: record.question2
         }
     })
 
@@ -56,7 +56,7 @@ const AllUserRecords = (props: {
                     columns={columns}
                     dataSource={tableData}
                     pagination={{
-                        position: ['none', props.records.length > 10 ? 'bottomCenter' : "none"],
+                        position: ['none', props.activities.length > 10 ? 'bottomCenter' : "none"],
                         showSizeChanger: true,
                         defaultPageSize: 10,
                     }}

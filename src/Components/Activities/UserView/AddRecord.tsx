@@ -1,99 +1,108 @@
-import { Button, InputNumber, Select, message } from 'antd';
+import { Button, DatePicker, InputNumber, Select, message } from 'antd';
 import './AddRecord.scss';
 import { useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
-import { Record } from '../../../Utils/Types';
+import { Activity } from '../../../Utils/Types';
+import OneActivity from './OneActivity';
+import { activityTypes } from '../../../Utils/Utils';
 
-// AddRecord
-const AddRecord = (props: {
-  addRecord: (record: Record) => void;
-}) => {
+// AddRecord adds an entire measurement period for the user with all of its new activities and ther details. It ensures
+// the information is sent and saved to the database. 
+const AddRecord = () => {
 
   // are they supposed to add as many as they want?
 
-  const [activityType, setActivityType] = useState<string>('');
-  const [duration, setDuration] = useState<number>(0);
-  const [notes, setNotes] = useState<string>('');
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [attemptedSubmit, setAttemptedSubmit] = useState<boolean>(false);
 
-  const activityTypes = [
-    { value: '', label: '' },
-    { value: 'updated design model', label: 'updated design model' },
-    { value: 'retrieved information', label: 'retrieved information' },
-    { value: 'waited for X', label: 'waited for X' },
-    { value: 'ran a simulation', label: 'ran a simulation ' },
-    { value: 'Other', label: 'Other' },
-  ]
-  
   const [messageApi, contextHolder] = message.useMessage();
 
-  const saveRecord = () => {
-    setAttemptedSubmit(true);
-    if (!activityType || !duration || !notes) {
-      return;
-    }
+  
 
-    const newRecord: Record = {
-      entered: (new Date()).toISOString(),
-      type: activityType,
-      duration: duration,
-      notes: notes
-    }
-    // save record to the database
+  const saveActivity = () => {
+    setAttemptedSubmit(true);
+    // loop through all activities checking if they have all the required fields,
+    // if not make an error message pop up like the success message.
+    // if (!activityType || !duration || !notes) {
+    //   return;
+    // }
+
+    // const newActivity: Activity = {
+    //   entered: (new Date()).toISOString(),
+    //   type: activityType,
+    //   duration: duration,
+    //   notes: notes
+    // }
+    // // save activity to the database
     messageApi.open({
       type: 'success',
-      content: 'Record Saved',
+      content: 'Measurement Period and Activities Saved',
     });
     // clear the form
-    setActivityType('');
-    setDuration(0);
-    setNotes('');
+    setActivities([]);
     setAttemptedSubmit(false);
-    props.addRecord(newRecord);
+    // props.addRecord(newRecord);
+  }
+
+  const getTotalHours = () => {
+    return activities.reduce((acc, activity) => acc + activity.duration, 0);
   }
 
   return (
     <div className="AddRecord ColumnFlex">
       {contextHolder}
       <div className='Bubble'>
-        <h2>Record a New Activity</h2>
-        <p>Activity Type</p>
-        <Select
-          // dropdown for activity type
-          className={attemptedSubmit && !activityType ? "ErrorForm" : ""}
-          defaultValue={''}
-          value={activityType}
-          options={activityTypes}
-          onChange={(value) => setActivityType(value)}
-        />
-        <p>Hours Spent on Activity</p>
-        <InputNumber
-          // input for duration in hours
-          className={attemptedSubmit && !duration ? "ErrorForm" : ""}
-          min={1}
-          max={10000}
-          value={duration}
-          onChange={(e) => setDuration(e ? e : 0)}
-          addonAfter="Hours"
-        />
-        <p>Brief Description of Activity</p>
-        <TextArea
-          style={{ maxWidth: '400px' }}
-          // input for notes
-          className={attemptedSubmit && !notes ? "ErrorForm" : ""}
-          autoSize={{ minRows: 3 }}
-          maxLength={240}
-          placeholder='Notes about activity ... '
-          value={notes}
-          onChange={(event) => {
-            setNotes(event.target.value && event.target.value.length > 240 ? event.target.value.substring(0, 240) : event.target.value);
-          }}
-        />
+        <h2>Record All New Activities for the Measurement Period</h2>
+        <p>
+          Remember Measuring Periods are from Monday to Wednesday and from Thursday to Friday. There are typically 24 work hours between Monday and Wednesday and 16 work hours between Thursday and Friday.
+        </p>
+        <div className='MeasurementPeriodContainer ColumnFlex'>
+          {
+            activities.map((activity, index) => (
+              <OneActivity
+                key={index}
+                attemptedSubmit={attemptedSubmit}
+                activities={activities}
+                setActivities={setActivities}
+                activityIndex={index}
+              />
+            ))
+          }
+          <br />
+          {
+            // Leave this at the bottom so users can continually add a new activity
+          }
+          <p>Select to Add a New Activity</p>
+          <Select
+            // dropdown for activity type
+            defaultValue={''}
+            value={''}
+            options={activityTypes}
+            onChange={(value) => {
+              // create new activity
+              if (value) {
+                setActivities([...activities, {
+                  type: value,
+                  duration: 0,
+                  question1: '',
+                  question2: '',
+                  question3: '',
+                  pointScale: 0,
+                }]);
+              }
+            }}
+          />
+        </div>
         <br />
+        <p>Select Dates of Measurement Period</p>
+        <DatePicker.RangePicker />
+        <h3>Total Hours Recorded: {getTotalHours()}</h3>
         <Button
-          onClick={() => saveRecord()}
+          style={{ minHeight: '50px' }}
+          onClick={() => saveActivity()}
+          type='primary'
         >
-          Save Record
+          Save All Activities for the Measurement Period
         </Button>
       </div>
     </div>

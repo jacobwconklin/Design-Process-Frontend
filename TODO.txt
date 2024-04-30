@@ -10,3 +10,29 @@
 2) What are desired Admin action?
     ie show all users who haven't submitted in last 'x' amount of time?
     show users with less than 'x' submissions?
+    Monitor users,
+    show data visualizations...? Maybe per activity type show durations x by utc time?
+
+
+Features / issues:
+1) Have login and activities screen show loading screen until back-end wakes up when it is not awake. Tell users it can take several minutes, have front-end just keep trying when it gets the failed connection error back from backend (TODO specifically identify that error) so that user just has to watch loading screen / do something else and doesn't have to repeatedly attempt entry. 
+
+
+different navy workers over 9 months. We want to monitor how these "design" activities work. Users will come and go throughout project (won't be here for entire 9 months) Users involved will fil it in potentialy bi-weekly. 
+
+- Maybe make users specify the time period they are entering for somehow? like select the dates?
+
+- make tasks[1] case 2 a select instead of a text area?
+
+TODO Tuesday April 30th:
+1) fix the following FE items:
+
+    Want to capture what they are doing in sequential order. IE what did they do Monday? 
+    (Does  the sequential order matter within a measurement period? (not sure about overlap)). 
+    Use new questions from Prof. 
+
+    wake up database IMMEDIATELY on opening website. - then switch to vt mysql 
+
+2) write backend functions to write personal info and records to db, and retreive all records from db, and check login matches (don't recover pw for now)
+
+3) deploy new front-end

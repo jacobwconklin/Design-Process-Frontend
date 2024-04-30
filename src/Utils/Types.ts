@@ -24,8 +24,7 @@ export interface PlayerInformation {
     // degreeProgram?: string;
     // yearsInProgram?: null | number;
 
-    // Education levels: "HighSchool", "Associates", "Bachelors", "Masters", "Professional (MBA, JD, MD)", "Doctorate", "Other"
-    highschoolEducation?: string;
+    // Education levels:  "Associates", "Bachelors", "Masters", "Professional (MBA, JD, MD)", "Doctorate", "Other"
     bachelorsEducation?: string;
     mastersEducation?: string;
     doctorateEducation?: string;
@@ -55,13 +54,13 @@ export interface PlayerInformation {
     otherSpecialization?: number;
 
     /**
-     * Any shipyard, NAVSEA, PNAV, Pentagon, NSWC- Dahlgren Division, NSWC- Carderock Division, NSWC – Other (please specify),
+     * Any shipyard, NAVSEA, OPNAV, Pentagon, NSWC- Dahlgren Division, NSWC- Carderock Division, NSWC – Other (please specify),
      */
     shipyardAgency?: number;
     navseaAgency?: number;
     nswcDahlgrenAgency?: number;
     nswcCarderockAgency?: number;
-    pnavAgency?: number;
+    opnavAgency?: number;
     pentagonAgency?: number;
     otherNswcAgencyName?: string | null;
     otherAgency?: number;
@@ -76,10 +75,21 @@ export interface PlayerInformation {
     designChangeCharacteristicsFamiliarity: null | number | string;
 }
 
-export interface Record {
+// Holds information about measurement period (contains one or more activity records)
+export interface MeasurementPeriod {
     email?: string;
     entered: string;
+    startDate: string;
+    endDate: string;
+}
+
+// holds information about a single activity record
+export interface Activity {
+    email?: string;
     type: string;
     duration: number;
-    notes: string;
+    question1: string;
+    question2: string;
+    question3?: string;
+    pointScale?: number;
 }

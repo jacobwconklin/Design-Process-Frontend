@@ -1,5 +1,26 @@
-.NewComponent {
+.AddRecord {
     opacity: 1;
+
+    // .MeasurementPeriodContainer {
+    //     border: 1px solid black;
+    //     border-radius: 8px;
+    // }
+
+    .ant-select {
+        height: fit-content;
+
+        .ant-select-selection-item {
+            text-wrap: wrap;
+        }
+    }
+
+    .ant-select-dropdown {
+        text-wrap: wrap;
+    }
+
+    .ant-select-item-option-content {
+        white-space: normal;
+    }
 }
 
 .ant-input-number-group-wrapper, .ant-select, .ant-input, .ant-picker, .ant-color-picker-trigger, .ant-input-affix-wrapper {
