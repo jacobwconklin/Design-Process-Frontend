@@ -1,3 +1,11 @@
+# Access to deployment:
+live at:
+https://design-process-survey.azurewebsites.net
+
+console at:
+https://design-process-survey.scm.azurewebsites.net/DebugConsole/?shell=powershell
+
+
 # Design-Process-Frontend
 Allows Engineers to create accounts and log activities and durations of those activities to understand the design process of a team of Engineers. 
 

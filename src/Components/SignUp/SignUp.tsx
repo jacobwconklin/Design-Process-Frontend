@@ -27,6 +27,10 @@ const SignUp = () => {
     const [isSuccessfullySubmitted, setIsSuccessfullySubmitted] = useState(false);
     const [stateEmail, setStateEmail] = useState('');
     const [password, setPassword] = useState('');
+    // provide error messages for improper emails or passwords
+    const [invalidEmail, setInvalidEmail] = useState(false);
+    const [invalidPassword, setInvalidPassword] = useState(false);
+
     const [gender, setGender] = useState('');
     const [age, setAge] = useState<number | null>(0);
     const [employer, setEmployer] = useState('');
@@ -673,7 +677,7 @@ const SignUp = () => {
                 saveObjectToStorage('playerInformation', newPlayerInformation);
 
                 // submit player information to backend
-                const submitResult = await postRequest('/navydp/saveNewUser', JSON.stringify(newPlayerInformation));
+                const submitResult = await postRequest('navydp/saveNewUser', JSON.stringify(newPlayerInformation));
                 // const submitResult = { success: true, email: 'test', isAdmin: false }
 
                 if (submitResult.success) {
@@ -730,22 +734,40 @@ const SignUp = () => {
                                 <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                                 Email
                             </p>
+                            {
+                                invalidEmail && 
+                                <p style={{color: 'red'}}>Please enter a valid email address</p>
+                            }
                             <Input
+                                // TODO here is regex for very basic email validation: ^.+@.+\..+$, could be used when user finished typing email? (using ant error message for input?)
                                 className={attemptedSubmit && !stateEmail ? "ErrorForm" : ""}
-                                // TODO have a check to see if email is already taken
                                 placeholder='example@email.com'
                                 maxLength={100}
                                 value={stateEmail}
                                 onChange={(event) => {
+                                    // get rid of invalid in onChange, set inValid in on end of input
                                     const trimString = event.target.value.trim();
                                     setStateEmail(trimString && trimString.length > 100 ? trimString.substring(0, 100) : trimString);
+                                    if (/^.+@.+\..+$/.test(trimString)) {
+                                        setInvalidEmail(false);
+                                    }
+                                }}
+                                onBlur={() => {
+                                    if (!/^.+@.+\..+$/.test(stateEmail)) {
+                                        setInvalidEmail(true);
+                                    }
                                 }}
                             />
                             <p className="FormTitle" id='Password' >
                                 <span style={{ color: 'red', fontSize: 'large' }}>* </span>
                                 Password
                             </p>
+                            {
+                                invalidPassword && 
+                                <p style={{color: 'red'}}>Password cannot contain  ; or ' or -</p>
+                            }
                             <Input.Password
+                                // tell user that the characters: [', -, ;] are not allowed if they try to use them maybe?
                                 className={attemptedSubmit && !password ? "ErrorForm" : ""}
                                 placeholder='Your Password Here'
                                 maxLength={100}
@@ -754,6 +776,16 @@ const SignUp = () => {
                                 onChange={(event) => {
                                     const trimString = event.target.value.trim();
                                     setPassword(trimString && trimString.length > 100 ? trimString.substring(0, 100) : trimString);
+                                    if (!trimString.includes(';') && !trimString.includes('\'') && !trimString.includes('-')) {
+                                        setInvalidPassword(false);
+                                    } else {
+                                        setInvalidPassword(true);
+                                    }
+                                }}
+                                onBlur={() => {
+                                    if (password.includes(';') || password.includes('\'') || password.includes('-')) {
+                                        setInvalidPassword(true);
+                                    }
                                 }}
                             />
                             <p className='FormTitle' id='Gender' >

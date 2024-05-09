@@ -7,6 +7,16 @@ import { getRequest } from '../../../Utils/Api';
 import { Button } from 'antd';
 
 // AdminView
+// Brainstorming: 
+/*
+  I think AdminView should show two tables by default: 
+  1) all users
+  2) all measurement periods
+  These will be sortable by key metrics such as, user with least responses, user with longest time since responding, measurement period with the least amount of total hours logged, type of measurement period, etc.
+  Admins should be able to click on a user or measurement period to see more detailed information about them, such as all activities for a given measurement period, or all measurement periods for a given user (which can be clicked on to show all activities).
+  pulling up a new user can also allow admin to send them a pre-written email about their lack of responses, to do some other action, etc.
+  Maybe even add way for admins to flag specific users / measurement periods / activities so they can review / delete flagged items later?
+*/
 const AdminView = (props: {}) => {
 
   // will pull these from database, and re-pull after user adds a new record
@@ -49,7 +59,7 @@ const AdminView = (props: {}) => {
         </Button>
         <p>Will add functionality such as:</p>
         <ul>
-          <li>Clicking a Measurement Periods will show all activities</li>
+          <li>Clicking a Measurement Periods will show all activities in that period</li>
           <li>Could show all activities or measurement periods for a given user</li>
           <li>Sort users by least responses or longest time since responding</li>
           <li>etc.</li>

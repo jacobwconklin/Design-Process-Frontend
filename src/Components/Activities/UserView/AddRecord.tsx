@@ -47,7 +47,16 @@ const AddRecord = () => {
         completedAllActivities = false;
       }
     });
-    if (!completedAllActivities) {
+    // verify there is at least one valid activity
+    if (activities.length === 0) {
+      messageApi.open({
+        type: 'error',
+        content: 'Please add at least one activity',
+      });
+      setAttemptedSubmit(false);
+      setLoading(false);
+      return;
+    } else if (!completedAllActivities) {
       messageApi.open({
         type: 'error',
         content: 'Please fill out all fields for all activities and Measurement Period',
@@ -76,7 +85,7 @@ const AddRecord = () => {
         entered: new Date().toISOString(),
       }
       // save activities and measurement period to the database
-      const result = await postRequest("/navydp/saveNewMeasurementPeriod", JSON.stringify({
+      const result = await postRequest("navydp/saveNewMeasurementPeriod", JSON.stringify({
         activities: allActivities,
         ...newRecord
       }));
