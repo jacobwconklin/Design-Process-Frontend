@@ -10,7 +10,7 @@ import {
 import './SignUp.scss';
 import { useContext, useEffect, useState } from 'react';
 // import { postRequest } from '../../Utils/Api';
-import { PlayerInformation, UserContextType } from '../../Utils/Types';
+import { UserInformation, UserContextType } from '../../Utils/Types';
 import { UserContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import { getObjectFromStorage, saveObjectToStorage } from '../../Utils/Utils';
@@ -489,8 +489,8 @@ const SignUp = () => {
     // if user info in localStorage, pull it out
     useEffect(() => {
         if (!pulledFromLocalStorage) {
-            const playerInformation = getObjectFromStorage('playerInformation');
-            if (playerInformation) {
+            const userInformation = getObjectFromStorage('userInformation');
+            if (userInformation) {
                 // stored education and specialization names:
                 const educationLevelsStored = ["bachelorsEducation", "mastersEducation", "doctorateEducation", "otherEducation"];
 
@@ -513,70 +513,70 @@ const SignUp = () => {
                     "projectContextFamiliarity", "navyPlatformFamiliarity", "designChangeCharacteristicsFamiliarity"
                 ]
 
-                setStateEmail(playerInformation.email);
-                setPassword(playerInformation.password);
-                setGender(playerInformation.gender);
-                setAge(playerInformation.age);
-                setEthnicity(playerInformation.ethnicity ? playerInformation.ethnicity.split(', ') : []);
-                setEmployer(playerInformation.employer);
-                setTeam(playerInformation.team);
-                setTitle(playerInformation.title);
+                setStateEmail(userInformation.email);
+                setPassword(userInformation.password);
+                setGender(userInformation.gender);
+                setAge(userInformation.age);
+                setEthnicity(userInformation.ethnicity ? userInformation.ethnicity.split(', ') : []);
+                setEmployer(userInformation.employer);
+                setTeam(userInformation.team);
+                setTitle(userInformation.title);
 
-                // setIsCollegeStudent(playerInformation.isCollegeStudent);
-                // if (playerInformation.university) setUniversity(playerInformation.university);
-                // if (playerInformation.degreeProgram) setDegreeProgram(playerInformation.degreeProgram);
-                // if (playerInformation.yearsInProgram) setYearsInProgram(playerInformation.yearsInProgram);
+                // setIsCollegeStudent(userInformation.isCollegeStudent);
+                // if (userInformation.university) setUniversity(userInformation.university);
+                // if (userInformation.degreeProgram) setDegreeProgram(userInformation.degreeProgram);
+                // if (userInformation.yearsInProgram) setYearsInProgram(userInformation.yearsInProgram);
                 const newEducationalBackgroundCompleted = Array(educationLevels.length + 1).fill(0);
                 const newEducationalBackgroundSubjectArea = Array(educationLevels.length + 1).fill("N/A");
                 educationLevelsStored.forEach((educationLevel, index) => {
-                    if (playerInformation[educationLevel]) {
-                        newEducationalBackgroundCompleted[index] = playerInformation[educationLevel].startsWith("Yes") ? 1 : 2;
+                    if (userInformation[educationLevel]) {
+                        newEducationalBackgroundCompleted[index] = userInformation[educationLevel].startsWith("Yes") ? 1 : 2;
                         newEducationalBackgroundSubjectArea[index]
-                            = playerInformation[educationLevel].substring(playerInformation[educationLevel].indexOf(":") + 1);
+                            = userInformation[educationLevel].substring(userInformation[educationLevel].indexOf(":") + 1);
                     } else {
                         newEducationalBackgroundCompleted[index] = 0;
                     }
                 });
                 setEducationalBackgroundCompleted(newEducationalBackgroundCompleted);
                 setEducationalBackgroundSubjectArea(newEducationalBackgroundSubjectArea);
-                if (playerInformation.otherEducationName) setOtherEducation(playerInformation.otherEducationName);
+                if (userInformation.otherEducationName) setOtherEducation(userInformation.otherEducationName);
 
                 specializationsStored.forEach((specialization, index) => {
-                    if (playerInformation[specialization]) {
+                    if (userInformation[specialization]) {
                         const newSpecializationCompleted = [...specializationCompleted];
                         newSpecializationCompleted[index] = true;
                         setSpecializationCompleted(newSpecializationCompleted);
                         const newSpecializationYears = [...specializationYears];
-                        newSpecializationYears[index] = playerInformation[specialization];
+                        newSpecializationYears[index] = userInformation[specialization];
                         setSpecializationYears(newSpecializationYears);
                     }
                 });
-                if (playerInformation.otherSpecializationName) setOtherSpecialization(playerInformation.otherSpecializationName);
+                if (userInformation.otherSpecializationName) setOtherSpecialization(userInformation.otherSpecializationName);
 
                 agenciesStored.forEach((agency, index) => {
-                    if (playerInformation[agency]) {
+                    if (userInformation[agency]) {
                         const newAgenciesCompleted = [...agenciesCompleted];
                         newAgenciesCompleted[index] = true;
                         setAgenciesCompleted(newAgenciesCompleted);
                         const newAgencyYears = [...agencyYears];
-                        newAgencyYears[index] = playerInformation[agency];
+                        newAgencyYears[index] = userInformation[agency];
                         setAgencyYears(newAgencyYears);
                     }
                 });
-                if (playerInformation.otherNswcAgencyName) setOtherAgency (playerInformation.otherNswcAgencyName);
+                if (userInformation.otherNswcAgencyName) setOtherAgency (userInformation.otherNswcAgencyName);
 
                 const newExperienceValues = [...experienceValues];
                 experienceQuestionsStored.forEach((experienceQuestion, index) => {
-                    if (playerInformation[experienceQuestion]) {
-                        newExperienceValues[index] = parseInt(playerInformation[experienceQuestion]);
+                    if (userInformation[experienceQuestion]) {
+                        newExperienceValues[index] = parseInt(userInformation[experienceQuestion]);
                     }
                 });
                 setExperienceValues(newExperienceValues);
 
                 const newFamiliarityValues = [...familiarityValues];
                 familiarityQuestionsStored.forEach((familiarityQuestion, index) => {
-                    if (playerInformation[familiarityQuestion]) {
-                        newFamiliarityValues[index] = parseInt(playerInformation[familiarityQuestion]);
+                    if (userInformation[familiarityQuestion]) {
+                        newFamiliarityValues[index] = parseInt(userInformation[familiarityQuestion]);
                     }
                 });
                 setFamiliarityValues(newFamiliarityValues);
@@ -593,7 +593,7 @@ const SignUp = () => {
             setAttemptedSubmit(true);
             if (canSubmit()) {
                 // save player information
-                const newPlayerInformation: PlayerInformation = {
+                const newUserInformation: UserInformation = {
                     
                     email: stateEmail,
                     password,
@@ -674,10 +674,10 @@ const SignUp = () => {
                 // will also need to be saved.
 
                 // Save player information to localStorage to be able to retreive it if it is there on future starts
-                saveObjectToStorage('playerInformation', newPlayerInformation);
+                saveObjectToStorage('userInformation', newUserInformation);
 
                 // submit player information to backend
-                const submitResult = await postRequest('navydp/saveNewUser', JSON.stringify(newPlayerInformation));
+                const submitResult = await postRequest('navydp/saveNewUser', JSON.stringify(newUserInformation));
                 // const submitResult = { success: true, email: 'test', isAdmin: false }
 
                 if (submitResult.success) {

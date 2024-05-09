@@ -1,0 +1,20 @@
+.DetailedUserInfo {
+
+    .UserActions {
+        justify-content: center;
+        gap: 40px;
+    }
+
+    .UserDetailsBox {
+        width: calc(100% - 45px);
+
+        .UserDetails {
+            padding: 10px;
+            margin: 20px;
+            border: 1px solid black;
+            p {
+                width: 100%;
+            }
+        }
+    }
+}

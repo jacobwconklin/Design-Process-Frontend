@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { MeasurementPeriod } from '../../../Utils/Types';
+import { MeasurementPeriod, UserInformation, UserTableInformation } from '../../../Utils/Types';
 import './AdminView.scss';
-import { tempFakeAdminRecords } from '../../../Utils/TempFakeData';
 import AllUserRecords from './AllUserRecords';
-import { getRequest } from '../../../Utils/Api';
+import { getRequest, postRequest } from '../../../Utils/Api';
 import { Button } from 'antd';
+import DetailedUserInfo from './DetailedUserInfo';
+import PeriodsTable from './PeriodsTable';
+import { objectKeysFirstLetterToLowerCase } from '../../../Utils/Utils';
+import ActivitiesTable from './ActivitiesTable';
 
 // AdminView
 // Brainstorming: 
@@ -20,52 +23,123 @@ import { Button } from 'antd';
 const AdminView = (props: {}) => {
 
   // will pull these from database, and re-pull after user adds a new record
-  const [periods, setPeriods] = useState<Array<MeasurementPeriod>>(tempFakeAdminRecords);
+  // Below code pulls ALL measurement periods:
+  // const [periods, setPeriods] = useState<Array<MeasurementPeriod>>(tempFakeAdminRecords);
+  // useEffect(() => {
+  //   // get all Measurement Period records from the db
+  //   const pullPeriods = async () => {
+  //     const response = await getRequest('navydp/getAllMeasurementPeriods');
+  //     if (response.success) {
+  //       setPeriods(response.data);
+  //     } else {
+  //       console.error("Error getting all Measurement Periods", response);
+  //     }
+  //   }
+  //   pullPeriods();
+  // }, [])
+
+  // pulls and holds all users
+  const [allUsers, setAllUsers] = useState<Array<UserTableInformation>>([]);
   useEffect(() => {
     // get all Measurement Period records from the db
-    const pullPeriods = async () => {
-      const response = await getRequest('navydp/getAllMeasurementPeriods');
+    const pullAllUsers = async () => {
+      const response = await getRequest('navydp/getAllUserRecords');
       if (response.success) {
-        setPeriods(response.data);
+        setAllUsers(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<UserTableInformation>);
       } else {
-        console.error("Error getting all Measurement Periods", response);
+        console.error("Error getting all User Information", response);
       }
     }
-    pullPeriods();
+    pullAllUsers();
   }, [])
 
-  // Pull activities for a given Measurement Period when chosen by user... TODO 
+  // information about user admin has selected
+  const [selectedUser, setSelectedUser] = useState<UserTableInformation | null>(null);
 
+  // pull detailed information about a user
+  const [selectedUserDetails, setSelectedUserDetails] = useState<UserInformation | null>(null);
+  const pullDetailedUserInfo = async (email: string) => {
+    const response = await postRequest('navydp/getUserDetails', JSON.stringify({ email }));
+    if (response.success) {
+      setSelectedUserDetails(objectKeysFirstLetterToLowerCase(response.data) as UserInformation);
+    } else {
+      console.error("Error getting User Information", response);
+    }
+  }
 
-  // TODO pull records from database with use effect
-  // TODO let admin click a measurement period to see all activities and total hours logged for it. 
+  // pull all measurement periods for a given user
+  const [userPeriods, setUserPeriods] = useState<Array<MeasurementPeriod>>([]);
+  const pullAllMeasurementPeriodsForUser = async (email: string) => {
+    const response = await postRequest('navydp/getAllMeasurementPeriodsForUser', JSON.stringify({ email }));
+    if (response.success) {
+      setUserPeriods(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<MeasurementPeriod>);
+    } else {
+      console.error("Error getting all Measurement Periods for User", response);
+    }
+  }
+
+  // set selected user and pull their details and measurement periods
+  const selectUser = async (user: UserTableInformation) => {
+    setSelectedPeriod(null);
+    setSelectedUser(user);
+    pullDetailedUserInfo(user.email);
+    pullAllMeasurementPeriodsForUser(user.email);
+  }
+
+  // Pull activities for a given Measurement Period when chosen by admin
+  const [selectedPeriod, setSelectedPeriod] = useState<MeasurementPeriod | null>(null);
+
+  // TODO may add selectActivity to show all details about answers to a single activity
 
   return (
     <div className="AdminView ColumnFlex Top">
       <div className='Bubble'>
-        <h2>Admin Dashboard</h2>
-        <Button
-          onClick={async () => {
-            const response = await getRequest('navydp/getAllMeasurementPeriods');
-            console.log("Response from getting all Measurement Periods", response);
-            if (response.success) {
-              setPeriods(response.data);
-            } else {
-              console.error("Error getting all Measurement Periods", response);
-            }
-          }}
-        >
-          Refresh Data
-        </Button>
-        <p>Will add functionality such as:</p>
-        <ul>
-          <li>Clicking a Measurement Periods will show all activities in that period</li>
-          <li>Could show all activities or measurement periods for a given user</li>
-          <li>Sort users by least responses or longest time since responding</li>
-          <li>etc.</li>
-        </ul>
+        <h1>Admin Dashboard</h1>
+        <div className='AdminDashButtons RowFlex'>
+          <Button
+            onClick={async () => {
+              setSelectedPeriod(null);
+              setSelectedUserDetails(null);
+              setSelectedUser(null);
+              setUserPeriods([]);
+              const response = await getRequest('navydp/getAllUserRecords');
+              if (response.success) {
+                setAllUsers(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<UserTableInformation>);
+              } else {
+                console.error("Error getting all User Records", response);
+              }
+            }}
+          >
+            Refresh
+          </Button>
+
+        </div>
       </div>
-      <AllUserRecords periods={periods} />
+      <div className='AdminScreensHolder'>
+        <AllUserRecords
+          users={allUsers}
+          selectUser={selectUser}
+        />
+        {
+          selectedUser &&
+          <DetailedUserInfo
+            user={{ ...selectedUser, ...selectedUserDetails }}
+          />
+        }
+        {
+          userPeriods.length > 0 &&
+          <PeriodsTable
+            periods={userPeriods}
+            selectPeriod={setSelectedPeriod}
+          />
+        }
+        {
+          selectedPeriod &&
+          <ActivitiesTable
+            period={selectedPeriod}
+          />
+        }
+      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ export interface UserContextType {
 }
 
 // All information for players obtained from the registration form
-export interface PlayerInformation {
+export interface UserInformation {
     email: string;
     password: string;
     gender: string;
@@ -74,12 +74,30 @@ export interface PlayerInformation {
     designChangeCharacteristicsFamiliarity: null | number | string;
 }
 
+// Holds simpler information about a user to be displayed in the admin dashboard table
+// All information for players obtained from the registration form
+export interface UserTableInformation {
+    email: string; // TODO if anonymitiy is desired, hide the email and use a unique ID
+    
+    // employer: string, TODO, could leave these, but won't for now
+    // team: string;
+    // title: string;
+
+    // compiled by backend:
+    lastRecordedPeriodStartDate: string;
+    lastRecordedPeriodEndDate: string;
+    numberOfPeriods: number;
+    totalHoursRecorded: number;
+}
+
 // Holds information about measurement period (contains one or more activity records)
 export interface MeasurementPeriod {
-    email?: string;
+    id?: number;
+    email: string;
     entered: string;
     startDate: string;
     endDate: string;
+    totalDuration: number;
 }
 
 // holds information about a single activity record

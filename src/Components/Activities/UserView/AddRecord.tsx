@@ -81,8 +81,9 @@ const AddRecord = () => {
       const newRecord: MeasurementPeriod = {
         startDate: startDate,
         endDate: endDate,
-        email: email ? email : undefined,
+        email: email ? email : "",
         entered: new Date().toISOString(),
+        totalDuration: getTotalHours(),
       }
       // save activities and measurement period to the database
       const result = await postRequest("navydp/saveNewMeasurementPeriod", JSON.stringify({

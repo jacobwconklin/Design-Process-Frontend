@@ -66,3 +66,13 @@ export const tasks = [
 export const activityTypes = [{ value: '', label: '' }].concat(tasks.map(task => {
     return { value: task, label: task }
   }))
+
+// convert first letter keys of an object to lowercase
+// TODO move into api file to happen right away on post / get requests
+export const objectKeysFirstLetterToLowerCase = (obj: any) => {
+    const newObj: { [key: string]: any } = {}; // Add index signature to newObj
+    Object.keys(obj).forEach(key => {
+        newObj[key.charAt(0).toLowerCase() + key.slice(1)] = obj[key];
+    })
+    return newObj;
+}
