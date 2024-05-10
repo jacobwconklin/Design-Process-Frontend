@@ -431,10 +431,10 @@ const SignUp = () => {
     // verify user can submit
     const canSubmit = () => {
         // check for invalid elements and scroll to top element that is invalid
-        if (!stateEmail) {
+        if (!stateEmail || invalidEmail) {
             document.getElementById('Email')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
-        } else if (!password) {
+        } else if (!password || invalidPassword) {
             document.getElementById('Password')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         } else if (!gender) {
