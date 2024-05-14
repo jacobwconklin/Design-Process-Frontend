@@ -34,7 +34,7 @@ const NavHeader = () => {
                     }
                 }}
             >
-                <h1 className='Title'>Decision Process</h1>
+                <h1 className='Title'>Shefa was here</h1>
                 {/*<img className='HeaderLogo' src={stselabGamesLogo} alt='Stselab games logo: a golfball in a gear' />*/}
 
             </div>
