@@ -107,5 +107,5 @@ export interface Activity {
     question1: string;
     question2: string;
     question3?: string;
-    pointScale?: number;
+    question4?: string;
 }

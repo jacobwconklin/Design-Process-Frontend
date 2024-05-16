@@ -59,6 +59,7 @@ export const tasks = [
     "I retrieved knowledge by doing research, data collection, or testing",
     "I waited for new information (and in parallel worked on another activity not related to this project).",
     "I updated an existing analytical/mathematical model based on new information.",
+    "I obtained knowledge from a stakeholder, planning yard, SME, or technical authority outside of B50",
     "I analyzed some new information that I received.",
     "I shared new information or data with colleagues."
   ];

@@ -967,7 +967,7 @@ const SignUp = () => {
                             <div className='PageBreak'></div>
 
                             <p>
-                                Have you ever worked in any of the following Navy Agencies in a different capacity? Please check all that apply and indicate the number of years:
+                                Have you ever worked in any of the following agencies in a different capacity? Please check all that apply and indicate the number of years:
                             </p>
                             <Table
                                 dataSource={getAgenciesDataSource()}

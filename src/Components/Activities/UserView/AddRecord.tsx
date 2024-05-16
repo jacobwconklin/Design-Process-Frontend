@@ -39,12 +39,14 @@ const AddRecord = () => {
     let completedAllActivities = true;
     activities.forEach((activity) => {
       if (
+        // TODO should have a key somewhere that says what activity tasks have what questions, and how many questions each has.
         !activity.duration || !activity.question1 || !activity.question2 ||
-        (!activity.question3 && (activity.type === tasks[2] || activity.type === tasks[3] || activity.type === tasks[5])) ||
-        (!activity.pointScale && (activity.type === tasks[3] || activity.type === tasks[4] || activity.type === tasks[5])) ||
+        (!activity.question3 && (activity.type !== tasks[0] && activity.type !== tasks[1])) ||
+        (!activity.question4 && (activity.type !== tasks[0] && activity.type !== tasks[1] && activity.type !== tasks[2] && activity.type !== tasks[5])) ||
         !endDate || !startDate
       ) {
         completedAllActivities = false;
+        console.log("Problem activity is: ", activity);
       }
     });
     // verify there is at least one valid activity
@@ -73,7 +75,7 @@ const AddRecord = () => {
           question1: activity.question1,
           question2: activity.question2,
           question3: activity.question3,
-          pointScale: activity.pointScale,
+          question4: activity.question4,
         }
         allActivities.push(newActivity);
       });
@@ -140,11 +142,12 @@ const AddRecord = () => {
           }
           <p>Select to Add a New Activity</p>
           <Select
+            className='AddActivitySelect'
             // dropdown for activity type
             defaultValue={''}
             value={''}
             options={activityTypes}
-            onChange={(value) => {
+            onChange={(value): void => {
               // create new activity
               if (value) {
                 setActivities([...activities, {
@@ -153,7 +156,7 @@ const AddRecord = () => {
                   question1: '',
                   question2: '',
                   question3: '',
-                  pointScale: 0,
+                  question4: '',
                 }]);
               }
             }}
