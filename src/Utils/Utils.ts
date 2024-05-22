@@ -20,6 +20,13 @@ export const ordinal_suffix = (i: number) => {
     return i + "th";
 }
 
+// Tells if a string is a valid email
+export const isValidEmail = (email: string) => {
+    // eslint-disable-next-line no-useless-escape
+    const emailRegex = /^.+@.+\..+$/;
+    return emailRegex.test(email);
+}
+
 // Saves an object to browser storage. Saves it to both local and session storage under the same key given.
 // This is useful so that if a player refreshes their information can be preserved. Session storage is specific
 // to each tab, so checking session storage first allows a player to run the game with multiple tabs open. (good for dev and testing)

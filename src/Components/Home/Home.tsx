@@ -1,22 +1,35 @@
 import { Button } from 'antd';
 import './Home.scss';
 import { useNavigate } from 'react-router-dom';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../App';
 import { UserContextType } from '../../Utils/Types';
+import EmailVerification from './EmailVerification';
+import { getObjectFromStorage } from '../../Utils/Utils';
 
 // Home
 const Home = (props: {}) => {
 
   const navigate = useNavigate();
-  const { email } = useContext(UserContext) as UserContextType;
+  const { email, setEmail, setIsAdmin, setAuthToken } = useContext(UserContext) as UserContextType;
 
-  // if logged in take them to the dashboard
+  const [showUserEmailVerification, setShowUserEmailVerification] = useState(false);
+
+  // if logged in take them to the correct dashboard
   useEffect(() => {
     if (email) {
       navigate('/activities');
+    } else {
+      // check local storage for email
+      const loginInformation = getObjectFromStorage('loginInformation');
+      if (loginInformation?.email) {
+        setEmail(loginInformation.email);
+        setIsAdmin(loginInformation.isAdmin);
+        setAuthToken(loginInformation.authToken);
+        navigate('/activities');
+      }
     }
-  }, [navigate, email]);
+  }, [navigate, email, setEmail, setIsAdmin, setAuthToken]);
 
   return (
     <div className="Home ColumnFlex">
@@ -37,13 +50,28 @@ const Home = (props: {}) => {
         <h3>Log in or Sign up to begin recording activities:</h3>
         <div className="ButtonHolder RowFlex">
           <Button className="Button"
-            onClick={() => navigate('/login')}
+            onClick={() => {
+              // If user already had an email saved in context, they already would have been moved to the user view
+              setShowUserEmailVerification(true);
+            }}
           >Log In</Button>
           <Button className="Button"
             onClick={() => navigate('/signup')}
           >Sign Up</Button>
+          <Button className="Button"
+            type='link'
+            onClick={() => navigate('/login')}
+          >Admin Login</Button>
         </div>
       </div>
+      {
+        // have users input their email, then check if the email is in the database, if it is send them to user view, if it is not,
+        // prompt them to sign up
+        showUserEmailVerification &&
+        <EmailVerification 
+          exit={() => setShowUserEmailVerification(false)}
+        />
+      }
     </div>
   );
 };

@@ -57,7 +57,8 @@ const PeriodsTable = (props: {
             startDate: period.startDate,
             endDate: period.endDate,
             totalDuration: period.totalDuration,
-            entered: period.entered
+            entered: period.entered,
+            lastTime: period.lastTime,
         }
     })
 

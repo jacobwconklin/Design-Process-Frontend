@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
-import { MeasurementPeriod, UserInformation, UserTableInformation } from '../../../Utils/Types';
+import { useContext, useEffect, useState } from 'react';
+import { MeasurementPeriod, UserContextType, UserInformation, UserTableInformation } from '../../../Utils/Types';
 import './AdminView.scss';
 import AllUserRecords from './AllUserRecords';
-import { getRequest, postRequest } from '../../../Utils/Api';
+import { postRequest } from '../../../Utils/Api';
 import { Button } from 'antd';
 import DetailedUserInfo from './DetailedUserInfo';
 import PeriodsTable from './PeriodsTable';
 import { objectKeysFirstLetterToLowerCase } from '../../../Utils/Utils';
 import ActivitiesTable from './ActivitiesTable';
+import { UserContext } from '../../../App';
 
 // AdminView
 // Brainstorming: 
@@ -22,28 +23,14 @@ import ActivitiesTable from './ActivitiesTable';
 */
 const AdminView = (props: {}) => {
 
-  // will pull these from database, and re-pull after user adds a new record
-  // Below code pulls ALL measurement periods:
-  // const [periods, setPeriods] = useState<Array<MeasurementPeriod>>(tempFakeAdminRecords);
-  // useEffect(() => {
-  //   // get all Measurement Period records from the db
-  //   const pullPeriods = async () => {
-  //     const response = await getRequest('navydp/getAllMeasurementPeriods');
-  //     if (response.success) {
-  //       setPeriods(response.data);
-  //     } else {
-  //       console.error("Error getting all Measurement Periods", response);
-  //     }
-  //   }
-  //   pullPeriods();
-  // }, [])
+  const { email, authToken } = useContext(UserContext) as UserContextType;
 
   // pulls and holds all users
   const [allUsers, setAllUsers] = useState<Array<UserTableInformation>>([]);
   useEffect(() => {
     // get all Measurement Period records from the db
     const pullAllUsers = async () => {
-      const response = await getRequest('navydp/getAllUserRecords');
+      const response = await postRequest('navydp/getAllUserRecords', JSON.stringify({adminEmail: email, token: authToken}));
       if (response.success) {
         setAllUsers(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<UserTableInformation>);
       } else {
@@ -51,15 +38,15 @@ const AdminView = (props: {}) => {
       }
     }
     pullAllUsers();
-  }, [])
+  }, [authToken, email])
 
   // information about user admin has selected
   const [selectedUser, setSelectedUser] = useState<UserTableInformation | null>(null);
 
   // pull detailed information about a user
   const [selectedUserDetails, setSelectedUserDetails] = useState<UserInformation | null>(null);
-  const pullDetailedUserInfo = async (email: string) => {
-    const response = await postRequest('navydp/getUserDetails', JSON.stringify({ email }));
+  const pullDetailedUserInfo = async (userEmail: string) => {
+    const response = await postRequest('navydp/getUserDetails', JSON.stringify({ adminEmail: email, token: authToken, email: userEmail }));
     if (response.success) {
       setSelectedUserDetails(objectKeysFirstLetterToLowerCase(response.data) as UserInformation);
     } else {
@@ -69,8 +56,8 @@ const AdminView = (props: {}) => {
 
   // pull all measurement periods for a given user
   const [userPeriods, setUserPeriods] = useState<Array<MeasurementPeriod>>([]);
-  const pullAllMeasurementPeriodsForUser = async (email: string) => {
-    const response = await postRequest('navydp/getAllMeasurementPeriodsForUser', JSON.stringify({ email }));
+  const pullAllMeasurementPeriodsForUser = async (userEmail: string) => {
+    const response = await postRequest('navydp/getAllMeasurementPeriodsForUser', JSON.stringify({ adminEmail: email, token: authToken, email: userEmail }));
     if (response.success) {
       setUserPeriods(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<MeasurementPeriod>);
     } else {
@@ -102,7 +89,7 @@ const AdminView = (props: {}) => {
               setSelectedUserDetails(null);
               setSelectedUser(null);
               setUserPeriods([]);
-              const response = await getRequest('navydp/getAllUserRecords');
+              const response = await postRequest('navydp/getAllUserRecords', JSON.stringify({adminEmail: email, token: authToken}));
               if (response.success) {
                 setAllUsers(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<UserTableInformation>);
               } else {

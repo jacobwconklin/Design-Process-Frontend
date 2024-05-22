@@ -7,6 +7,7 @@ import { UserContextType } from '../Utils/Types';
 import { UserOutlined } from '@ant-design/icons';
 import { clearObjectFromStorage } from '../Utils/Utils';
 import { Button, Tooltip } from 'antd';
+import EmailVerification from '../Components/Home/EmailVerification';
 // import { postRequest } from '../Utils/Api';
 // import { clearObjectFromStorage } from '../Utils/Utils';
 
@@ -16,6 +17,7 @@ const NavHeader = () => {
     const navigate = useNavigate();
     const [showReturnHomeAndLogOutModal, setShowReturnHomeAndLogOutModal] = useState(false);
     const [showReturnHomeModal, setShowReturnHomeModal] = useState(false);
+    const [showVerifyEmailModal, setShowVerifyEmailModal] = useState(false);
     const { email, setEmail, setAuthToken, setIsAdmin } = useContext(UserContext) as UserContextType;
 
     return (
@@ -46,7 +48,7 @@ const NavHeader = () => {
                         if (email) {
                             setShowReturnHomeAndLogOutModal(true)
                         } else {
-                            navigate('/login');
+                            setShowVerifyEmailModal(true);
                         }
                     }}
                 >
@@ -62,9 +64,8 @@ const NavHeader = () => {
                     title='Would you like to log out?'
                     message='Logging out will require you to log back in next time you wish to record an activity. Are you sure you want to log out?'
                     confirm={() => {
-                        // removes player if they navigate away from game
                         if (email) {
-                            // TODO log out 
+                            // log out 
                             setEmail('');
                             setAuthToken('');
                             setIsAdmin(false);
@@ -73,6 +74,13 @@ const NavHeader = () => {
                         navigate('/')
                     }}
                     cancel={() => setShowReturnHomeAndLogOutModal(false)}
+                />
+            }
+            {
+                showVerifyEmailModal &&
+                <EmailVerification 
+                    exit={() => setShowVerifyEmailModal(false)}
+                    fromHeader={true}
                 />
             }
             {

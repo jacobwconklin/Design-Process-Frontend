@@ -10,7 +10,7 @@ export interface UserContextType {
 // All information for players obtained from the registration form
 export interface UserInformation {
     email: string;
-    password: string;
+    password?: string;
     gender: string;
     age: null | number;
     ethnicity: string;
@@ -98,6 +98,7 @@ export interface MeasurementPeriod {
     startDate: string;
     endDate: string;
     totalDuration: number;
+    lastTime: boolean;
 }
 
 // holds information about a single activity record

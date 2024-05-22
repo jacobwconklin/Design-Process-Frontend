@@ -22,6 +22,11 @@
     .ant-select-dropdown {
         text-wrap: wrap;
     }
+
+    .SwitchAndLabels {
+        justify-content: center;
+        gap: 10px;
+    }
 }
 
 .ant-input-number-group-wrapper, .ant-select, .ant-input, .ant-picker, .ant-color-picker-trigger, .ant-input-affix-wrapper {

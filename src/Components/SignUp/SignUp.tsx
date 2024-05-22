@@ -13,7 +13,7 @@ import { useContext, useEffect, useState } from 'react';
 import { UserInformation, UserContextType } from '../../Utils/Types';
 import { UserContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
-import { getObjectFromStorage, saveObjectToStorage } from '../../Utils/Utils';
+import { getObjectFromStorage, isValidEmail, saveObjectToStorage } from '../../Utils/Utils';
 import { postRequest } from '../../Utils/Api';
 
 // SignUp
@@ -26,10 +26,8 @@ const SignUp = () => {
 
     const [isSuccessfullySubmitted, setIsSuccessfullySubmitted] = useState(false);
     const [stateEmail, setStateEmail] = useState('');
-    const [password, setPassword] = useState('');
-    // provide error messages for improper emails or passwords
+    // provide error messages for improper emails 
     const [invalidEmail, setInvalidEmail] = useState(false);
-    const [invalidPassword, setInvalidPassword] = useState(false);
 
     const [gender, setGender] = useState('');
     const [age, setAge] = useState<number | null>(0);
@@ -434,9 +432,6 @@ const SignUp = () => {
         if (!stateEmail || invalidEmail) {
             document.getElementById('Email')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
-        } else if (!password || invalidPassword) {
-            document.getElementById('Password')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return false;
         } else if (!gender) {
             document.getElementById('Gender')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
@@ -514,7 +509,6 @@ const SignUp = () => {
                 ]
 
                 setStateEmail(userInformation.email);
-                setPassword(userInformation.password);
                 setGender(userInformation.gender);
                 setAge(userInformation.age);
                 setEthnicity(userInformation.ethnicity ? userInformation.ethnicity.split(', ') : []);
@@ -596,7 +590,6 @@ const SignUp = () => {
                 const newUserInformation: UserInformation = {
                     
                     email: stateEmail,
-                    password,
                     gender,
                     age,
                     ethnicity: ethnicity.join(', '), // convert array to string
@@ -748,43 +741,13 @@ const SignUp = () => {
                                     // get rid of invalid in onChange, set inValid in on end of input
                                     const trimString = event.target.value.trim();
                                     setStateEmail(trimString && trimString.length > 100 ? trimString.substring(0, 100) : trimString);
-                                    if (/^.+@.+\..+$/.test(trimString)) {
+                                    if (isValidEmail(trimString)) {
                                         setInvalidEmail(false);
                                     }
                                 }}
                                 onBlur={() => {
-                                    if (!/^.+@.+\..+$/.test(stateEmail)) {
+                                    if (!isValidEmail(stateEmail)) {
                                         setInvalidEmail(true);
-                                    }
-                                }}
-                            />
-                            <p className="FormTitle" id='Password' >
-                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                Password
-                            </p>
-                            {
-                                invalidPassword && 
-                                <p style={{color: 'red'}}>Password cannot contain  ; or ' or -</p>
-                            }
-                            <Input.Password
-                                // tell user that the characters: [', -, ;] are not allowed if they try to use them maybe?
-                                className={attemptedSubmit && !password ? "ErrorForm" : ""}
-                                placeholder='Your Password Here'
-                                maxLength={100}
-                                minLength={6}
-                                value={password}
-                                onChange={(event) => {
-                                    const trimString = event.target.value.trim();
-                                    setPassword(trimString && trimString.length > 100 ? trimString.substring(0, 100) : trimString);
-                                    if (!trimString.includes(';') && !trimString.includes('\'') && !trimString.includes('-')) {
-                                        setInvalidPassword(false);
-                                    } else {
-                                        setInvalidPassword(true);
-                                    }
-                                }}
-                                onBlur={() => {
-                                    if (password.includes(';') || password.includes('\'') || password.includes('-')) {
-                                        setInvalidPassword(true);
                                     }
                                 }}
                             />

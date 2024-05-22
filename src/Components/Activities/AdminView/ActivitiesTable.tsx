@@ -1,15 +1,18 @@
 import { Table } from 'antd';
 import './ActivitiesTable.scss';
-import { Activity, MeasurementPeriod } from '../../../Utils/Types';
-import { useEffect, useState } from 'react';
+import { Activity, MeasurementPeriod, UserContextType } from '../../../Utils/Types';
+import { useContext, useEffect, useState } from 'react';
 import { postRequest } from '../../../Utils/Api';
 import { objectKeysFirstLetterToLowerCase } from '../../../Utils/Utils';
+import { UserContext } from '../../../App';
 
 // ActivitiesTable
 // TODO- NOT a priority, focus rn is on adding new records 
 const ActivitiesTable = (props: {
     period: MeasurementPeriod
 }) => {
+
+    const {email, authToken} = useContext(UserContext) as UserContextType;
 
     // pull all activities for the given period in props
     const [activities, setActivities] = useState<Array<Activity>>([]);
@@ -18,7 +21,7 @@ const ActivitiesTable = (props: {
         console.log(props.period.id + " is the period id")
         const pullActivities = async () => {
             const response = await postRequest('navydp/getActivityRecordsForPeriod', JSON.stringify({ 
-                measurementPeriod: props.period.id
+                measurementPeriod: props.period.id, adminEmail: email, token: authToken
             }));
             if (response.success) {
                 setActivities(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<Activity>);
@@ -27,7 +30,7 @@ const ActivitiesTable = (props: {
             }
         }
         pullActivities();
-    }, [props.period.id])
+    }, [authToken, email, props.period.id])
 
     const columns = [
         // {
