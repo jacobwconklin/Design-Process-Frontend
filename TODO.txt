@@ -35,3 +35,10 @@ Big TODOs:
 
 6) Handle user saying they are done working on the project, and display this color coded on the admin dashboard
 
+Can add color if "entered" value is > a certain amount after end date to say the user entered the values late, if wanted. 
+
+TODO if user submits a second report for the same measurement period should we:
+    a) keep both and reference both
+    b) combine all new activities (in case they forgot one)
+    c) replace whatever they have entered previously with the new entry
+    ??? For Prof 

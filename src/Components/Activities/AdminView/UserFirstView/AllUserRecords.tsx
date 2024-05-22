@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import './AllUserRecords.scss';
-import { UserTableInformation } from '../../../Utils/Types';
+import { UserTableInformation } from '../../../../Utils/Types';
 
 // AllUserRecords
 // TODO- NOT a priority, focus rn is on adding new records 

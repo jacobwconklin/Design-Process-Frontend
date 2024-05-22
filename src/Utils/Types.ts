@@ -110,3 +110,9 @@ export interface Activity {
     question3?: string;
     question4?: string;
 }
+
+// a group of measurement periods for a single user in a range to show on admin dashboard
+export interface UserMeasurementPeriod {
+    email: string;
+    periods: Array<MeasurementPeriod>;
+}

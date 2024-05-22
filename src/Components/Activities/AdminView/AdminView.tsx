@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from 'react';
 import { MeasurementPeriod, UserContextType, UserInformation, UserTableInformation } from '../../../Utils/Types';
 import './AdminView.scss';
-import AllUserRecords from './AllUserRecords';
+import AllUserRecords from './UserFirstView/AllUserRecords';
 import { postRequest } from '../../../Utils/Api';
 import { Button } from 'antd';
-import DetailedUserInfo from './DetailedUserInfo';
-import PeriodsTable from './PeriodsTable';
+import DetailedUserInfo from './UserFirstView/DetailedUserInfo';
+import PeriodsTable from './UserFirstView/PeriodsTable';
 import { objectKeysFirstLetterToLowerCase } from '../../../Utils/Utils';
-import ActivitiesTable from './ActivitiesTable';
+import ActivitiesTable from './UserFirstView/ActivitiesTable';
 import { UserContext } from '../../../App';
+import TimeView from './TimeView/TimeView';
 
 // AdminView
 // Brainstorming: 
@@ -30,7 +31,7 @@ const AdminView = (props: {}) => {
   useEffect(() => {
     // get all Measurement Period records from the db
     const pullAllUsers = async () => {
-      const response = await postRequest('navydp/getAllUserRecords', JSON.stringify({adminEmail: email, token: authToken}));
+      const response = await postRequest('navydp/getAllUserRecords', JSON.stringify({ adminEmail: email, token: authToken }));
       if (response.success) {
         setAllUsers(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<UserTableInformation>);
       } else {
@@ -89,7 +90,7 @@ const AdminView = (props: {}) => {
               setSelectedUserDetails(null);
               setSelectedUser(null);
               setUserPeriods([]);
-              const response = await postRequest('navydp/getAllUserRecords', JSON.stringify({adminEmail: email, token: authToken}));
+              const response = await postRequest('navydp/getAllUserRecords', JSON.stringify({ adminEmail: email, token: authToken }));
               if (response.success) {
                 setAllUsers(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<UserTableInformation>);
               } else {
@@ -101,6 +102,9 @@ const AdminView = (props: {}) => {
           </Button>
 
         </div>
+      </div>
+      <div className='TimeViewHolder'>
+        {/* <TimeView />  */}
       </div>
       <div className='AdminScreensHolder'>
         <AllUserRecords

@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import './PeriodsTable.scss';
-import { MeasurementPeriod } from '../../../Utils/Types';
+import { MeasurementPeriod } from '../../../../Utils/Types';
 
 // PeriodsTable
 // TODO- NOT a priority, focus rn is on adding new records 

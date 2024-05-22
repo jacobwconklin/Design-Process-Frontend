@@ -1,10 +1,10 @@
 import { Table } from 'antd';
 import './ActivitiesTable.scss';
-import { Activity, MeasurementPeriod, UserContextType } from '../../../Utils/Types';
+import { Activity, MeasurementPeriod, UserContextType } from '../../../../Utils/Types';
 import { useContext, useEffect, useState } from 'react';
-import { postRequest } from '../../../Utils/Api';
-import { objectKeysFirstLetterToLowerCase } from '../../../Utils/Utils';
-import { UserContext } from '../../../App';
+import { postRequest } from '../../../../Utils/Api';
+import { objectKeysFirstLetterToLowerCase } from '../../../../Utils/Utils';
+import { UserContext } from '../../../../App';
 
 // ActivitiesTable
 // TODO- NOT a priority, focus rn is on adding new records 
