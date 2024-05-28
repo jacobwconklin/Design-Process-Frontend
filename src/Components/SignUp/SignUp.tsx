@@ -15,6 +15,7 @@ import { UserContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import { getObjectFromStorage, isValidEmail, saveObjectToStorage } from '../../Utils/Utils';
 import { postRequest } from '../../Utils/Api';
+import dayjs from 'dayjs';
 
 // SignUp
 const SignUp = () => {
@@ -661,6 +662,11 @@ const SignUp = () => {
                     projectContextFamiliarity: '' + familiarityValues[0],
                     navyPlatformFamiliarity: '' + familiarityValues[1],
                     designChangeCharacteristicsFamiliarity: '' + familiarityValues[2],
+
+                    // Add join project date as sign up date (TODO let users backdate this if necessary)
+                    // more accurate than joining the project they are working on this date refers to joining the 
+                    // project that is being used to collect data, or the survey app itself. 
+                    joinedProjectDate: dayjs(new Date()).format('YYYY-MM-DD'),
                 }
 
                 // Save to context whether a player is joining or hosting the session. The Player's unique playerId

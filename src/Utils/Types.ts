@@ -72,6 +72,10 @@ export interface UserInformation {
     projectContextFamiliarity: null | number | string;
     navyPlatformFamiliarity: null | number | string;
     designChangeCharacteristicsFamiliarity: null | number | string;
+
+    // admin dash fields
+    joinedProjectDate?: string;
+    leftProjectDate?: string;
 }
 
 // Holds simpler information about a user to be displayed in the admin dashboard table

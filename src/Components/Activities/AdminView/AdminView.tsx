@@ -104,7 +104,7 @@ const AdminView = (props: {}) => {
         </div>
       </div>
       <div className='TimeViewHolder'>
-        {/* <TimeView />  */}
+        <TimeView /> 
       </div>
       <div className='AdminScreensHolder'>
         <AllUserRecords

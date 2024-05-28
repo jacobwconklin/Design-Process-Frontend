@@ -42,3 +42,5 @@ TODO if user submits a second report for the same measurement period should we:
     b) combine all new activities (in case they forgot one)
     c) replace whatever they have entered previously with the new entry
     ??? For Prof 
+
+Require multiple activity types?
