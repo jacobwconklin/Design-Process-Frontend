@@ -2,13 +2,53 @@
 live at:
 https://design-process-survey.azurewebsites.net
 
-console at:
-https://design-process-survey.scm.azurewebsites.net/DebugConsole/?shell=powershell
-
 
 # Design-Process-Frontend
 Allows Engineers to create accounts and log activities and durations of those activities to understand the design process of a team of Engineers. 
 
+
+# How to Deploy Changes to Live URL:
+
+0) Make sure Git versioning is up to date. First pull any changes from other contributors using the command:
+```
+git pull
+```
+Then use VS Code to save all of your changes to github after testing everything still works locally. Even if you are the sole contributor on the project saving to GitHub is important to back up the code and be able to revert to a working version if anything breaks. 
+
+1) Update build by running:
+```
+npm run build
+```
+
+2) Then compress all of the files int the 'build' folder into a zip file,
+
+3) Then navigating to https://design-process-survey.scm.azurewebsites.net/DebugConsole/?shell=powershell,
+
+4) Then navigate into site, and then wwwroot, and then drag and drop the zip file onto the screen where the message, unzip appears.
+
+Viola. Visit the deployed url to see the changes (May take a few minutes and you may have the old version cached, hold shift and click refresh to do a hard refresh)
+
+# Running project locally:
+
+Pull any changes from the repository first to avoid merge conflicts (unless you are the sole contributor, but even then it is best practice)
+```
+git pull
+```
+
+To run locally for the first time you must have node installed. first run: 
+```
+npm i
+```
+
+Then you can run the following to run the server locally in development mode. All subsequent times that
+you would like to run the code you do not need to npm i again, unless new packages have been added. Running npm i is harmless so
+you may run it each time, or you can simply run this command:
+```
+npm run start
+```
+
+You will NEED to run the backend locally as well, or go into Api.ts and change the value returned in the 
+function 'getBackendUrl' to be the hosted backend if you do not wish to run the backend locally too. 
 
 # Getting Started with Create React App
 

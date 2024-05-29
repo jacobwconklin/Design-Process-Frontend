@@ -1,15 +1,14 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { MeasurementPeriod, UserContextType, UserInformation, UserTableInformation } from '../../../Utils/Types';
 import './AdminView.scss';
-import AllUserRecords from './UserFirstView/AllUserRecords';
 import { postRequest } from '../../../Utils/Api';
-import { Button } from 'antd';
 import DetailedUserInfo from './UserFirstView/DetailedUserInfo';
 import PeriodsTable from './UserFirstView/PeriodsTable';
 import { objectKeysFirstLetterToLowerCase } from '../../../Utils/Utils';
 import ActivitiesTable from './UserFirstView/ActivitiesTable';
 import { UserContext } from '../../../App';
 import TimeView from './TimeView/TimeView';
+import ReminderEmail from '../../../Reusable/ReminderEmail';
 
 // AdminView
 // Brainstorming: 
@@ -26,23 +25,11 @@ const AdminView = (props: {}) => {
 
   const { email, authToken } = useContext(UserContext) as UserContextType;
 
-  // pulls and holds all users
-  const [allUsers, setAllUsers] = useState<Array<UserTableInformation>>([]);
-  useEffect(() => {
-    // get all Measurement Period records from the db
-    const pullAllUsers = async () => {
-      const response = await postRequest('navydp/getAllUserRecords', JSON.stringify({ adminEmail: email, token: authToken }));
-      if (response.success) {
-        setAllUsers(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<UserTableInformation>);
-      } else {
-        console.error("Error getting all User Information", response);
-      }
-    }
-    pullAllUsers();
-  }, [authToken, email])
-
   // information about user admin has selected
   const [selectedUser, setSelectedUser] = useState<UserTableInformation | null>(null);
+
+  // show reminder email modal
+  const [showSendEmail, setShowSendEmail] = useState(false);
 
   // pull detailed information about a user
   const [selectedUserDetails, setSelectedUserDetails] = useState<UserInformation | null>(null);
@@ -83,38 +70,18 @@ const AdminView = (props: {}) => {
     <div className="AdminView ColumnFlex Top">
       <div className='Bubble'>
         <h1>Admin Dashboard</h1>
-        <div className='AdminDashButtons RowFlex'>
-          <Button
-            onClick={async () => {
-              setSelectedPeriod(null);
-              setSelectedUserDetails(null);
-              setSelectedUser(null);
-              setUserPeriods([]);
-              const response = await postRequest('navydp/getAllUserRecords', JSON.stringify({ adminEmail: email, token: authToken }));
-              if (response.success) {
-                setAllUsers(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<UserTableInformation>);
-              } else {
-                console.error("Error getting all User Records", response);
-              }
-            }}
-          >
-            Refresh
-          </Button>
-
-        </div>
       </div>
       <div className='TimeViewHolder'>
-        <TimeView /> 
+        <TimeView
+          selectUser={selectUser}
+        /> 
       </div>
       <div className='AdminScreensHolder'>
-        <AllUserRecords
-          users={allUsers}
-          selectUser={selectUser}
-        />
         {
           selectedUser &&
           <DetailedUserInfo
-            user={{ ...selectedUser, ...selectedUserDetails }}
+            user={{ ...selectedUser, ...selectedUserDetails}}
+            sendEmail={() => setShowSendEmail(true)} 
           />
         }
         {
@@ -131,6 +98,13 @@ const AdminView = (props: {}) => {
           />
         }
       </div>
+      {
+        showSendEmail && selectedUser &&
+        <ReminderEmail 
+          email={selectedUser.email}
+          close={() => setShowSendEmail(false)}
+        />
+      }
     </div>
   );
 };

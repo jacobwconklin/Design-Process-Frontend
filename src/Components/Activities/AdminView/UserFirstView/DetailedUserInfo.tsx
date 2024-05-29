@@ -5,7 +5,8 @@ import { useState } from 'react';
 // DetailedUserInfo
 // add to this component actions the admin can take towards the user such as deleting, sending them a reminder email, etc. 
 const DetailedUserInfo = (props: {
-    user: any
+    user: any,
+    sendEmail: () => void;
 }) => {
 
     const [hideInfo, setHideInfo] = useState(false);
@@ -15,7 +16,9 @@ const DetailedUserInfo = (props: {
             <h2>Details for User:</h2>
             <h2>{props.user.email}</h2>
             <div className='UserActions RowFlex'>
-                <Button>
+                <Button
+                    onClick={props.sendEmail}
+                >
                     Send Reminder Email
                 </Button>
                 <Button

@@ -1,24 +1,49 @@
 .TimeView {
-    .SelectTimeMessage {
-        padding: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .Bubble > * {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .HideUserToggle {
+        justify-content: center;
+        gap: 10px;
     }
 
     .ant-table-wrapper {
+        width: 100%;
+        padding: 0px 20px 20px 20px;
+        background-color: whitesmoke;
+
+        .ant-table-thead {
+            .ant-table-cell {
+                // padding: 4px;
+            }
+        }
+
         .ant-table-cell {
-            padding: 0px;
+           //  padding: 0px;
         }
 
         .EmailCell {
             width: 120px;
-            height: 100%;
-            min-height: 55px;
+            // height: 100%;
+            // min-height: 55px;
             text-align: left;
-            padding: 5px;
+            // padding: 5px;
+            color: blue;
+            &:hover {
+                cursor: pointer;
+            }
         }
 
         .DateCell {
             width: 80px;
-            height: 100%;
+            // height: 100%;
             text-align: center;
             padding: 5px;
         }

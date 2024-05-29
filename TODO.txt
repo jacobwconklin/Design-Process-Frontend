@@ -11,29 +11,16 @@
 
 - maybe make activities box and measurement period box separate bubbles in a flex box so they are side by side on wide enough screens.
 
-Ask Prof:
-    Want to capture what they are doing in sequential order. IE what did they do Monday? 
-    (Does  the sequential order matter within a measurement period? (not sure about overlap)). \
-
-Notes from 05/20
-
-Q: will Shefa also handle design process app? 
-    A: no
-
-Q: do we even want passwords? Or just have them put in their email? 
-    A: No password needed, EXCEPT for admin. 
-
 
 Note: Show admin view from a measurement period first approach ( maybe make a toggle between user first and measurement period first )
 
 Show in a bigger way the hours FOR the block (IE Mon-Wed is 24 hours), so they see how many hours they have entered compares to that. 
 
-
 Big TODOs:
 
-5) Change admin dashboard to view across measurement periods, (one idea is show table / grid like view where measurement periods are headers (show around 5 at a time) and each row is a user where they have color coordinated boxes under each measurement period showing green if they have filled that one out, or red if not. Show a differeent color for all periods BEFORE a user's first ever green, and show a different color for after a user has indicated they no longer work on the project. )
-
 6) Handle user saying they are done working on the project, and display this color coded on the admin dashboard
+
+7) add onPressEntered to inputs such as login password, etc. 
 
 Can add color if "entered" value is > a certain amount after end date to say the user entered the values late, if wanted. 
 
@@ -41,6 +28,11 @@ TODO if user submits a second report for the same measurement period should we:
     a) keep both and reference both
     b) combine all new activities (in case they forgot one)
     c) replace whatever they have entered previously with the new entry
+    d) not allow it 
+    e) (probably best) have them tell us record is already found and ask if they want to add to it or replace it, then have be do that
     ??? For Prof 
 
-Require multiple activity types?
+ALSO ask professor for estimate of final number of users. 
+
+Require multiple activity types? ( incentivizing users to fill out form properly somehow? )
+
