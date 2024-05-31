@@ -175,7 +175,7 @@ const AddRecord = () => {
         >
           Save All Activities for the Measurement Period
         </Button>
-        <p>Is this your last measurement period on the project?</p>
+        {/* <p>Is this your last measurement period on the project?</p>
         <div className='SwitchAndLabels RowFlex'>
           <p>No</p>
           <Switch 
@@ -183,7 +183,7 @@ const AddRecord = () => {
             onChange={(checked) => setIsLastPeriod(checked)}
           />
           <p>Yes</p>
-        </div>
+        </div> */}
       </div>
 
       <div className='Bubble'>

@@ -103,9 +103,9 @@ const TimeView = (props: {
             }
         }
 
+        let periodsToDisplay: Array<string> = [lastMeasurementPeriodShowing.format('YYYY-MM-DD')];
+        let periodsFound = 1;
         let dayToCheck = lastMeasurementPeriodShowing.subtract(1, 'day');
-        let periodsToDisplay: Array<string> = [];
-        let periodsFound = 0;
         while (periodsFound < 5) {
             if (dayToCheck.day() === 1 || dayToCheck.day() === 4) {
                 periodsToDisplay.push(
@@ -165,7 +165,7 @@ const TimeView = (props: {
                     // user indicated they left the project or before a user joined the project. 
                     return (
                         <div className={`DateCell ${record[`period${date}`].isLastTime ? 'LastTime' : (record[`period${date}`].hours >= 0 ? 'Regular' : 'NoRecord')}`}>
-                            {record[`period${date}`].hours >= 0 ? record[`period${date}`].hours + ' hours' : 'N/A'}
+                            {record[`period${date}`].hours >= 0 ? record[`period${date}`].hours + ' hours' : 'X'}
                             {record[`period${date}`].isLastTime ? <span className='LastTimeTag'>Last Time</span> : null}
                         </div>
                     );
@@ -174,7 +174,7 @@ const TimeView = (props: {
         })
     ];
 
-    const tableData = userMeasurementPeriods.map((userMeasurementPeriod: UserMeasurementPeriod, index: number) => {
+    const tableData = userMeasurementPeriods.filter((ump: any) => ump.email !== 'admin').map((userMeasurementPeriod: UserMeasurementPeriod, index: number) => {
         let dataObject: any = {
             key: index,
             ...userMeasurementPeriod
@@ -227,10 +227,14 @@ const TimeView = (props: {
             <div className='TimeViewInfo Bubble'>
                 <h2>Measurement Periods in Chronological Order</h2>
                 <h3>Click a + on the left to reveal more information about a user, and click any row in the table to show even more user details and actions below.</h3>
-                <p className='SelectTimeMessage'>
-                    Showing the last 5 measurement periods that started before: {lastMeasurementPeriodShowing.format('YYYY-MM-DD') + ' '}
-                    Click the date picker to change that date, and see the 5 measurement periods before the date you select.
+                <p>
+                    In the table below, a red rectangle with an 'X' indicates the user has not submitted a report for the measurement period. A green rectangle indicates that the user has submitted a report for the measurement period. A yellow rectangle indicates that the user has submitted a report for the measurement period and it is the last time they will be submitting a report. The number inside of a green or yellow rectangle is the total number of hours the user recorded across all activities in that measurement period. 
                 </p>
+                <p className='SelectTimeMessage'>
+                    Currentl showing the last 5 measurement periods that started before and including the measurement period that started on: {lastMeasurementPeriodShowing.format('YYYY-MM-DD')}.
+                    Click the date picker to change that date, and see 5 measurement periods back from the date you select.
+                </p>
+                <br />
                 <DatePicker
                     onChange={(date: Dayjs | null) => {
                         if (date) {

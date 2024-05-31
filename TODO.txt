@@ -36,3 +36,4 @@ ALSO ask professor for estimate of final number of users.
 
 Require multiple activity types? ( incentivizing users to fill out form properly somehow? )
 
+Change lastTime to not exist on the ativity level, makes more sense to just be it's own form and have it's own place on the site. 
