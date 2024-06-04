@@ -86,7 +86,6 @@ export interface MeasurementPeriod {
     startDate: string;
     endDate: string;
     totalDuration: number;
-    lastTime: boolean;
 }
 
 // holds information about a single activity record

@@ -19,7 +19,6 @@ const AddRecord = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const [isLastPeriod] = useState<boolean>(false);
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -108,8 +107,7 @@ const AddRecord = () => {
         endDate: endDate,
         email: email ? email : "",
         entered: new Date().toISOString(),
-        totalDuration: getTotalHours(),
-        lastTime: isLastPeriod,
+        totalDuration: getTotalHours()
       }
       // save activities and measurement period to the database
       const result = await postRequest("navydp/saveNewMeasurementPeriod", JSON.stringify({
@@ -176,15 +174,6 @@ const AddRecord = () => {
         >
           Save All Activities for the Measurement Period
         </Button>
-        {/* <p>Is this your last measurement period on the project?</p>
-        <div className='SwitchAndLabels RowFlex'>
-          <p>No</p>
-          <Switch 
-            checked={isLastPeriod}
-            onChange={(checked) => setIsLastPeriod(checked)}
-          />
-          <p>Yes</p>
-        </div> */}
       </div>
 
       <div className='Bubble'>

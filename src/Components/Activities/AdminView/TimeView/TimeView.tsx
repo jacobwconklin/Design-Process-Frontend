@@ -111,7 +111,6 @@ const TimeView = (props: {
                     // entered: "default",
                     // email: "default",
                     // totalDuration: 0,
-                    // lastTime: false
                 );
                 periodsFound++;
                 if (periodsFound === 5) {
@@ -206,9 +205,8 @@ const TimeView = (props: {
         }
         previousMeasurementPeriodStartDates.forEach((date: string) => {
             const userHasThisDate = userMeasurementPeriod.periods.find((period: MeasurementPeriod) => period.startDate === date);
-            const isLastTime = userHasThisDate ? userHasThisDate.lastTime : false;
 
-            dataObject[`${date}`] = { isLastTime, hours: userHasThisDate ? userHasThisDate.totalDuration : -1 } // 
+            dataObject[`${date}`] = { hours: userHasThisDate ? userHasThisDate.totalDuration : -1 } // 
         });
         return dataObject;
     });
