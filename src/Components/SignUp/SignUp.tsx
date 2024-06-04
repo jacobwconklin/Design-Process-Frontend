@@ -49,15 +49,6 @@ const SignUp = () => {
     ]
     const [ethnicity, setEthnicity] = useState<string[]>([]);
 
-    // // If user is an undergraduate or graduate college student open the college 
-    // // questions to them
-    // const [isCollegeStudent, setIsCollegeStudent] = useState(0);
-    // // Begin only for college students
-    // const [university, setUniversity] = useState('');
-    // const [degreeProgram, setDegreeProgram] = useState('');
-    // const [yearsInProgram, setYearsInProgram] = useState<null | number>(0);
-    // // End only for college students
-
     /**
      * Information for Table for gathering Educational Background
      */
@@ -452,12 +443,6 @@ const SignUp = () => {
             document.getElementById('Title')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         } 
-
-
-        // else if (isCollegeStudent && (!university || !degreeProgram || !yearsInProgram)) {
-        //     document.getElementById('IsCollegeStudent')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        //     return false;
-        // } 
         
         else {
             // check all 7 point experience questions
@@ -517,10 +502,6 @@ const SignUp = () => {
                 setTeam(userInformation.team);
                 setTitle(userInformation.title);
 
-                // setIsCollegeStudent(userInformation.isCollegeStudent);
-                // if (userInformation.university) setUniversity(userInformation.university);
-                // if (userInformation.degreeProgram) setDegreeProgram(userInformation.degreeProgram);
-                // if (userInformation.yearsInProgram) setYearsInProgram(userInformation.yearsInProgram);
                 const newEducationalBackgroundCompleted = Array(educationLevels.length + 1).fill(0);
                 const newEducationalBackgroundSubjectArea = Array(educationLevels.length + 1).fill("N/A");
                 educationLevelsStored.forEach((educationLevel, index) => {
@@ -598,12 +579,6 @@ const SignUp = () => {
                     team,
                     title,
 
-                    // isCollegeStudent: isCollegeStudent,
-                    // university,
-                    // degreeProgram,
-                    // yearsInProgram,
-
-                    // TODO send as arrays
                     // All selected education values begin with "Yes:" or "Current:".
                     bachelorsEducation: educationalBackgroundCompleted[0] ?
                         ((educationalBackgroundCompleted[0] === 1 ? "Yes:" : "Current:") + educationalBackgroundSubjectArea[1]) : undefined,
@@ -738,7 +713,8 @@ const SignUp = () => {
                                 <p style={{color: 'red'}}>Please enter a valid email address</p>
                             }
                             <Input
-                                // TODO here is regex for very basic email validation: ^.+@.+\..+$, could be used when user finished typing email? (using ant error message for input?)
+                                // here is regex for very basic email validation: ^.+@.+\..+$, to be used when user finished typing email
+                                // THIS DOES NOT actually check that an email exists, just that it is in the 'correct format' IE has an @ and a . with text on every side.
                                 className={attemptedSubmit && !stateEmail ? "ErrorForm" : ""}
                                 placeholder='example@email.com'
                                 maxLength={100}
@@ -854,64 +830,7 @@ const SignUp = () => {
                                 }}
                             />
 
-
                             <div className='PageBreak'></div>
-
-                            {/* <p className='FormTitle' id='IsCollegeStudent' >
-                                <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                Are you currenlty a student in an undergraduate or graduate program?
-                            </p>
-                            <Radio.Group
-                                value={isCollegeStudent}
-                            >
-                                <Radio value={0} onClick={() => { setIsCollegeStudent(0) }}>No</Radio>
-                                <Radio value={1} onClick={() => { setIsCollegeStudent(1) }}>Yes</Radio>
-                            </Radio.Group>
-                            {
-                                !!isCollegeStudent &&
-                                <div className='IsCollegeStudent'>
-                                    <p className='FormTitle' >
-                                        <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                        University
-                                    </p>
-                                    <Input
-                                        className={attemptedSubmit && isCollegeStudent && !university ? "ErrorForm" : ""}
-                                        placeholder='Virginia Tech'
-                                        maxLength={64}
-                                        value={university}
-                                        onChange={(event) => {
-                                            setUniversity(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 64) : event.target.value);
-                                        }}
-                                    />
-                                    <p className='FormTitle' >
-                                        <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                        Degree Program
-                                    </p>
-                                    <Input
-                                        className={attemptedSubmit && isCollegeStudent && !degreeProgram ? "ErrorForm" : ""}
-                                        placeholder='Industrial Systems Engineering'
-                                        maxLength={64}
-                                        value={degreeProgram}
-                                        onChange={(event) => {
-                                            setDegreeProgram(event.target.value && event.target.value.length > 64 ? event.target.value.substring(0, 64) : event.target.value);
-                                        }}
-                                    />
-                                    <p className='FormTitle' >
-                                        <span style={{ color: 'red', fontSize: 'large' }}>* </span>
-                                        Years in Program
-                                    </p>
-                                    <InputNumber
-                                        className={attemptedSubmit && isCollegeStudent && !yearsInProgram ? "ErrorForm" : ""}
-                                        min={1}
-                                        max={99}
-                                        value={yearsInProgram}
-                                        onChange={(e) => setYearsInProgram(e)}
-                                        addonAfter="Years"
-                                    />
-                                </div>
-                            }
-
-                            <div className='PageBreak'></div> */}
 
                             <p>Educational Background. Please fill in all of your degrees and / or certifications</p>
                             <Table

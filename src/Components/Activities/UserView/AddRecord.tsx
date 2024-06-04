@@ -1,4 +1,4 @@
-import { Button, DatePicker, DatePickerProps, Select, Switch, message } from 'antd';
+import { Button, DatePicker, DatePickerProps, Select, message } from 'antd';
 import './AddRecord.scss';
 import { useContext, useState } from 'react';
 import { Activity, MeasurementPeriod, UserContextType } from '../../../Utils/Types';
@@ -19,7 +19,7 @@ const AddRecord = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const [isLastPeriod, setIsLastPeriod] = useState<boolean>(false);
+  const [isLastPeriod] = useState<boolean>(false);
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -64,7 +64,7 @@ const AddRecord = () => {
     let completedAllActivities = true;
     activities.forEach((activity) => {
       if (
-        // TODO should have a key somewhere that says what activity tasks have what questions, and how many questions each has.
+        // TODO should have a key somewhere that clearly says what activity tasks have what questions, and how many questions each has.
         !activity.duration || !activity.question1 || !activity.question2 ||
         (!activity.question3 && (activity.type !== tasks[0] && activity.type !== tasks[1])) ||
         (!activity.question4 && (activity.type !== tasks[0] && activity.type !== tasks[1] && activity.type !== tasks[2] && activity.type !== tasks[5]))
@@ -116,6 +116,7 @@ const AddRecord = () => {
         activities: allActivities,
         ...newRecord
       }));
+      
       if (result.success) {
         messageApi.open({
           type: 'success',

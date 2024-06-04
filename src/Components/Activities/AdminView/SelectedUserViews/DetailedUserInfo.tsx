@@ -22,11 +22,6 @@ const DetailedUserInfo = (props: {
                     Send Reminder Email
                 </Button>
                 <Button
-                    danger
-                >
-                    Delete User
-                </Button>
-                <Button
                     onClick={() => setHideInfo(!hideInfo)}
                 >
                     {hideInfo ? 'Show' : 'Hide'} Information

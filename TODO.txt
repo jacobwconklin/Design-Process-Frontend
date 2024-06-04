@@ -1,39 +1,22 @@
-2) Admin action:
-    ie show all users who haven't submitted in last 'x' amount of time?
-    show users with less than 'x' submissions?
-    Monitor users,
-    show data visualizations...? Maybe per activity type show durations x by utc time?
-
-3) Other Modifications:
-- Maybe make users specify only pre-determined time periods, like Mon-Wed and Thu-Fri blocks rather than arbitrary dates.
-
-- make tasks[1] case 2 a select instead of a text area?
+Potential Modifications:
 
 - maybe make activities box and measurement period box separate bubbles in a flex box so they are side by side on wide enough screens.
 
+- Could add color if "entered" value is > a certain amount after end date to say the user entered the values late, if wanted. 
 
-Note: Show admin view from a measurement period first approach ( maybe make a toggle between user first and measurement period first )
+- Require multiple activity types? ( incentivizing users to fill out form properly somehow? )
 
-Show in a bigger way the hours FOR the block (IE Mon-Wed is 24 hours), so they see how many hours they have entered compares to that. 
 
 Big TODOs:
 
-6) Handle user saying they are done working on the project, and display this color coded on the admin dashboard
+1) Handle user saying they are done working on the project, probably a whole page with exit survey 
 
-7) add onPressEntered to inputs such as login password, etc. 
-
-Can add color if "entered" value is > a certain amount after end date to say the user entered the values late, if wanted. 
-
-TODO if user submits a second report for the same measurement period should we:
+2) if user submits a second report for the same measurement period should we:
     a) keep both and reference both
     b) combine all new activities (in case they forgot one)
     c) replace whatever they have entered previously with the new entry
     d) not allow it 
-    e) (probably best) have them tell us record is already found and ask if they want to add to it or replace it, then have be do that
+    e) (probably best) have them tell us record is already found and ask if they want to add to it or replace it, then do that
     ??? For Prof 
 
 ALSO ask professor for estimate of final number of users. 
-
-Require multiple activity types? ( incentivizing users to fill out form properly somehow? )
-
-Change lastTime to not exist on the ativity level, makes more sense to just be it's own form and have it's own place on the site. 

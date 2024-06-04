@@ -61,6 +61,7 @@ const Login = (props: {}) => {
                 placeholder='Your Password here'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onPressEnter={() => login()}
             />
             <br/>
             <br/>

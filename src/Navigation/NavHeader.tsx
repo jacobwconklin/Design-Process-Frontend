@@ -92,7 +92,7 @@ const NavHeader = () => {
                     confirm={() => {
                         // removes player if they navigate away from game
                         if (email) {
-                            // TODO log out 
+                            // log out 
                             setEmail('');
                             setAuthToken('');
                             setIsAdmin(false);

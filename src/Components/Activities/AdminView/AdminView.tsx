@@ -2,10 +2,10 @@ import { useContext, useState } from 'react';
 import { MeasurementPeriod, UserContextType, UserInformation, UserTableInformation } from '../../../Utils/Types';
 import './AdminView.scss';
 import { postRequest } from '../../../Utils/Api';
-import DetailedUserInfo from './UserFirstView/DetailedUserInfo';
-import PeriodsTable from './UserFirstView/PeriodsTable';
+import DetailedUserInfo from './SelectedUserViews/DetailedUserInfo';
+import PeriodsTable from './SelectedUserViews/PeriodsTable';
 import { objectKeysFirstLetterToLowerCase } from '../../../Utils/Utils';
-import ActivitiesTable from './UserFirstView/ActivitiesTable';
+import ActivitiesTable from './SelectedUserViews/ActivitiesTable';
 import { UserContext } from '../../../App';
 import TimeView from './TimeView/TimeView';
 import ReminderEmail from '../../../Reusable/ReminderEmail';
@@ -64,8 +64,6 @@ const AdminView = (props: {}) => {
 
   // Pull activities for a given Measurement Period when chosen by admin
   const [selectedPeriod, setSelectedPeriod] = useState<MeasurementPeriod | null>(null);
-
-  // TODO may add selectActivity to show all details about answers to a single activity
 
   return (
     <div className="AdminView ColumnFlex Top">

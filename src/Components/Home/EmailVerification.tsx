@@ -64,6 +64,11 @@ const EmailVerification = (props: {
                 onChange={(e) => {
                     setUserInputEmail(e.target.value);
                 }}
+                onPressEnter={() => { 
+                    if (isValidEmail(userInputEmail)) {
+                        verifyEmail() 
+                    }
+                }}
             />
             <br />
             {

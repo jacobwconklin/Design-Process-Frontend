@@ -9,25 +9,71 @@
         padding-right: 20px;
     }
 
+    .KeyBox {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+        .KeysRow {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            
+            .OneKey {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .ColorBox {
+                    width: 60px;
+                    height: 60px;
+                }
+
+                .Gray {
+                    background-color: rgba(128, 128, 128, 0.3);
+                    border: 1px solid black;
+                }
+                
+                .Yellow {
+                    background-color: rgba(219, 200, 22, 0.3);
+                    border: 1px solid rgb(119, 72, 3);
+                }
+
+                .Green {
+                    background-color: rgba(0, 128, 0, 0.3);
+                    border: 1px solid green;
+                }
+
+                .Red {
+                    background-color: rgb(255, 214, 214);
+                    border: 1px solid red;
+                }
+            }
+        }
+    }
+
     .HideUserToggle {
         justify-content: center;
         gap: 10px;
+    }
+
+    .TooltipHolder {
+        width: calc(400px - 40px);
+    }
+
+    .MoveDateButtons {
+        width: 400px;
+        justify-content: space-between;
+        .ant-btn {
+            border: 1px solid black;
+        }
     }
 
     .ant-table-wrapper {
         width: 100%;
         padding: 0px 20px 20px 20px;
         background-color: whitesmoke;
-
-        .ant-table-thead {
-            .ant-table-cell {
-                // padding: 4px;
-            }
-        }
-
-        .ant-table-cell {
-           //  padding: 0px;
-        }
 
         .EmailCell {
             width: 120px;
@@ -48,14 +94,20 @@
             padding: 5px;
         }
     
-        .LastTime {
-            background-color: rgba(255, 255, 0, 0.3);
-            border: 1px solid yellow;
+        .LowHours {
+            background-color: rgba(219, 200, 22, 0.3);
+            border: 1px solid rgb(119, 72, 3);
+
         }
     
-        .Regular {
+        .Valid {
             background-color: rgba(0, 128, 0, 0.3);
             border: 1px solid green;
+        }
+
+        .BeforeJoin, .AfterLeave {
+            background-color: rgba(128, 128, 128, 0.3);
+            border: 1px solid black;
         }
     
         .NoRecord {

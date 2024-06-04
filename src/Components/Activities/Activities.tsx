@@ -17,7 +17,7 @@ const Activities = (props: {}) => {
     const { isAdmin, email, setEmail, setIsAdmin, setAuthToken } = useContext(UserContext) as UserContextType;
 
     const navigate = useNavigate();
-    // return home if signed out (TODO also return home if token expired)
+    // return home if signed out 
     useEffect(() => {
         if (!email) {
           // first try to get login info from local storage, if not there or it's incomplete, clear storage and return home
@@ -34,8 +34,6 @@ const Activities = (props: {}) => {
           }
         }
       }, [navigate, email, setIsAdmin, setAuthToken, setEmail]);
-
-    // TODO before pulling information for admin dashboard, verify with be that the user is an legitamte admin (maybe in admin file)
 
   return (
     <div className="Activities">

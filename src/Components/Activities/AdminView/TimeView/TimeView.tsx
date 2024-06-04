@@ -1,4 +1,4 @@
-import { DatePicker, DatePickerProps, Switch, Table, TableColumnsType } from 'antd';
+import { Button, DatePicker, DatePickerProps, Switch, Table, TableColumnsType, Tooltip } from 'antd';
 import './TimeView.scss';
 import { useContext, useEffect, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
@@ -6,17 +6,14 @@ import { ExpandedUserTableInformation, MeasurementPeriod, UserContextType, UserM
 import { postRequest } from '../../../../Utils/Api';
 import { objectKeysFirstLetterToLowerCase } from '../../../../Utils/Utils';
 import { UserContext } from '../../../../App';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 // TimeView
 const TimeView = (props: {
     selectUser: (user: UserTableInformation) => void
 }) => {
 
-    // TODO improve look of table
-
-    // TODO add info to headers such as day of week, expected hours, etc. 
-
-    // TODO add filtering / searching to tables (Maybe combine tables into one?) -- check out nested antD table to nest "all user" table into chronological table. 
+    // TODO add filtering / searching to tables
 
     // get admin credentials from context
     const { email, authToken } = useContext(UserContext) as UserContextType;
@@ -51,7 +48,7 @@ const TimeView = (props: {
     // will also pull all measurement periods within range of the last 5 measurement periods
     useEffect(() => {
         const pullUserMeasurementPeriods = async (earliestStartDate: string) => {
-            // TODO redo building of finalUserMeasurementPeriods to FIRST take in a list of ALL emails from BE (that will come from the same response paload). Use this master list of emails to start building the finalUserMeasurementPeriods array, which will also have joinedProjectDate and leftProjectDate attributes for the users (or not indicating they haven't left yet or they joined before I added that field to the db). Then keep map below, except will not need the else clause adding users seen for the first time. 
+            // build finalUserMeasurementPeriods to FIRST take in a list of ALL emails from BE. Use this master list of emails to start building the finalUserMeasurementPeriods array, which will also have joinedProjectDate and leftProjectDate attributes for the users (or not indicating they haven't left yet or they joined before I added that field to the db). 
 
             // first accept list of all users (including email, joinedProjectDate, and leftProjectDate, latest record start and end dates, total hours, and total measurement periods recorded) from the backend. Only need to do this once and can refer to it in the future
 
@@ -84,7 +81,6 @@ const TimeView = (props: {
                 token: authToken
             }));
             if (response.success) {
-
                 // then map over this list adding in measurement periods to their corresponding user to build the finalUserMeasurementPeriods array
                 response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)).map((measurementPeriodRow: MeasurementPeriod) => {
                     // if email is already in there, just append the period to the userMeasurementPeriods array
@@ -142,6 +138,37 @@ const TimeView = (props: {
         return `(${dayOfWeek}, ${expectedHours} hours expected)`;
     }
 
+    // get the appropriate cell class name and cell value based on the record
+    const getCellInformation = (record: any, date: string): { className: string, value: string } => {
+        // return an object with this signature:
+        let cellInformation = { className: '', value: '' };
+        // FIRST check if user does have a valid record for this date
+        if (record[`${date}`].hours >= 0) {
+            // user has a valid record for this date. Now check if it is below 
+            // the number of expected hours. 
+            if (record[`${date}`].hours < (dayjs(date).day() === 1 ? 24 : 16)) {
+                cellInformation.className = 'LowHours';
+                cellInformation.value = `${record[`${date}`].hours} ( -${(dayjs(date).day() === 1 ? 24 : 16) - record[`${date}`].hours} )`;
+            } else {
+                cellInformation.className = 'Valid';
+                cellInformation.value = `${record[`${date}`].hours} hours`;
+            }
+        } else if (record?.joinedProjectDate && dayjs(date).isBefore(dayjs(record.joinedProjectDate))) {
+            // SECOND check if date is before user joined the project
+            cellInformation.className = 'BeforeJoin';
+            cellInformation.value = 'Before Join';
+        } else if (record?.leftProjectDate && dayjs(date).isAfter(dayjs(record.leftProjectDate))) {
+            // THIRD check if date is after user left the project
+            cellInformation.className = 'AfterLeave';
+            cellInformation.value = 'Left Project';
+        } else {
+            // Otherwise, user has not submitted a record for this date and should have
+            cellInformation.className = 'NoRecord';
+            cellInformation.value = 'X';
+        }
+        return cellInformation;
+    }
+
     const columns = [
         {
             title: 'User Email',
@@ -157,16 +184,14 @@ const TimeView = (props: {
         },
         ...previousMeasurementPeriodStartDates.map((date: string, index: number) => {
             return {
-                title: <div><p>Start Date: {date} </p> <p>{getDayOfWeekAndExpectedHoursMessage(date)}</p></div>, // TODO add more info here such as end date, day of week, hours expected, etc.
+                title: <div><p>Start Date: {date} </p> <p>{getDayOfWeekAndExpectedHoursMessage(date)}</p></div>,
                 dataIndex: `period${date}`,
                 key: `period${date}`,
                 render: (text: any, record: any) => {
-                    // TODO for the class names will soon need a slightlymore sophisticated method that can also check if dates come after a 
-                    // user indicated they left the project or before a user joined the project. 
+                    const cellInformation = getCellInformation(record, date);
                     return (
-                        <div className={`DateCell ${record[`period${date}`].isLastTime ? 'LastTime' : (record[`period${date}`].hours >= 0 ? 'Regular' : 'NoRecord')}`}>
-                            {record[`period${date}`].hours >= 0 ? record[`period${date}`].hours + ' hours' : 'X'}
-                            {record[`period${date}`].isLastTime ? <span className='LastTimeTag'>Last Time</span> : null}
+                        <div className={`DateCell ${cellInformation.className}`}>
+                            {cellInformation.value}
                         </div>
                     );
                 }
@@ -183,7 +208,7 @@ const TimeView = (props: {
             const userHasThisDate = userMeasurementPeriod.periods.find((period: MeasurementPeriod) => period.startDate === date);
             const isLastTime = userHasThisDate ? userHasThisDate.lastTime : false;
 
-            dataObject[`period${date}`] = { isLastTime, hours: userHasThisDate ? userHasThisDate.totalDuration : -1 } // 
+            dataObject[`${date}`] = { isLastTime, hours: userHasThisDate ? userHasThisDate.totalDuration : -1 } // 
         });
         return dataObject;
     });
@@ -221,20 +246,62 @@ const TimeView = (props: {
         return <Table columns={columns} dataSource={data} pagination={false} />;
     };
 
-
     return (
         <div className="TimeView">
             <div className='TimeViewInfo Bubble'>
                 <h2>Measurement Periods in Chronological Order</h2>
-                <h3>Click a + on the left to reveal more information about a user, and click any row in the table to show even more user details and actions below.</h3>
-                <p>
-                    In the table below, a red rectangle with an 'X' indicates the user has not submitted a report for the measurement period. A green rectangle indicates that the user has submitted a report for the measurement period. A yellow rectangle indicates that the user has submitted a report for the measurement period and it is the last time they will be submitting a report. The number inside of a green or yellow rectangle is the total number of hours the user recorded across all activities in that measurement period. 
-                </p>
-                <p className='SelectTimeMessage'>
-                    Currentl showing the last 5 measurement periods that started before and including the measurement period that started on: {lastMeasurementPeriodShowing.format('YYYY-MM-DD')}.
-                    Click the date picker to change that date, and see 5 measurement periods back from the date you select.
-                </p>
+                <b>Click a + on the left to reveal more information about a user, and click any row in the table to show even more user details and actions below.</b>
+                <div className='KeyBox'>
+                    <Tooltip
+                        title={"In the table below, A gray rectangle indicates the user was not part of the project at the time of the measurement period. The cell will either state Before Join if the period of time is before the user joined the project, or Left Project if the date is after the user already left. A red rectangle with an 'X' indicates the user has not submitted a report for the measurement period.  A yellow rectangle indicates that the user has submitted a report for the measurement period but they submitted activities with a total sum of hours less than the expected number of hours. A green rectangle indicates that the user has submitted a report for the measurement period. The number inside of a green or yellow rectangle is the total number of hours the user recorded across all activities in that measurement period. In a yellow rectangle the number of hours is followed by the number of hours the user is below the expected number of hours for that measurement period."}
+                    >
+                        <h3 className='TooltipHolder' >
+                            Table Cell Key
+                            <span> <QuestionCircleOutlined /> </span>
+                        </h3>
+                    </Tooltip>
+                    <div className='KeysRow'>
+                        <div className='OneKey'>
+                            <p>Not on Project</p>
+                            <div className='ColorBox Gray'></div>
+                        </div>
+                        <div className='OneKey'>
+                            <p>Missing Record</p>
+                            <div className='ColorBox Red'></div>
+                        </div>
+                        <div className='OneKey'>
+                            <p>Lacking Hours</p>
+                            <div className='ColorBox Yellow'></div>
+                        </div>
+                        <div className='OneKey'>
+                            <p>Full Valid Record</p>
+                            <div className='ColorBox Green'></div>
+                        </div>
+
+                    </div>
+                </div>
                 <br />
+                <div className='HideUserToggle RowFlex'>
+                    <p>Hide users who have left the project?</p>
+                    <br />
+                    <br />
+                    <br />
+                    <p>No</p>
+                    <Switch
+                        checked={hideUsersWhoLeftProject}
+                        onChange={(checked) => setHideUsersWhoLeftProject(checked)}
+                    />
+                    <p>Yes</p>
+                </div>
+                <Tooltip
+                    className='TooltipHolder'
+                    title={`Currently showing the last 5 measurement periods that started before and including the measurement period that started on: ${lastMeasurementPeriodShowing.format('YYYY-MM-DD')}. Click the date picker to change that date, and see 5 measurement periods back from the date you select. Alternatively click the buttons below the date picker to move the date back or forward by one measurement period.`}
+                >
+                    <h3>
+                        Latest Date Shown in Table
+                        <span> <QuestionCircleOutlined /> </span>
+                    </h3>
+                </Tooltip>
                 <DatePicker
                     onChange={(date: Dayjs | null) => {
                         if (date) {
@@ -245,16 +312,31 @@ const TimeView = (props: {
                     disabledDate={disabledDates}
                 />
                 <br />
-                <br />
-                <p>Hide users who have left the project?</p>
-                <div className='HideUserToggle RowFlex'>
-                    <p>No</p>
-                    <Switch
-                        checked={hideUsersWhoLeftProject}
-                        onChange={(checked) => setHideUsersWhoLeftProject(checked)}
-                    />
-                    <p>Yes</p>
+                <div className='MoveDateButtons RowFlex'>
+                    <Button
+                        onClick={() => {
+                            let dayToCheck = lastMeasurementPeriodShowing.subtract(1, 'day');
+                            while (dayToCheck.day() !== 1 && dayToCheck.day() !== 4) {
+                                dayToCheck = dayToCheck.subtract(1, 'day');
+                            }
+                            setLastMeasurementPeriodShowing(dayToCheck);
+                        }}
+                    >
+                        Previous Period
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            let dayToCheck = lastMeasurementPeriodShowing.add(1, 'day');
+                            while (dayToCheck.day() !== 1 && dayToCheck.day() !== 4) {
+                                dayToCheck = dayToCheck.add(1, 'day');
+                            }
+                            setLastMeasurementPeriodShowing(dayToCheck);
+                        }}
+                    >
+                        Next Period
+                    </Button>
                 </div>
+                <br />
             </div>
             <Table
                 columns={columns}
@@ -270,7 +352,7 @@ const TimeView = (props: {
                 }}
                 onRow={(record, rowIndex) => {
                     return {
-                        onClick: event => { console.log("Selected user: ", record); props.selectUser(record); }, // click row
+                        onClick: event => { props.selectUser(record); }, // click row
                     };
                 }}
             />

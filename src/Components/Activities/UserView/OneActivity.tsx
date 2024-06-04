@@ -42,8 +42,6 @@ const OneActivity = (props: {
         })
     }
 
-    // TODO make all tasks components into an array and access them conditionally with a map
-
     return (
         <div className="OneActivity ColumnFlex"
             style={{

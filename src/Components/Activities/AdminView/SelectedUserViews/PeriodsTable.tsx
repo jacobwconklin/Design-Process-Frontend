@@ -3,7 +3,6 @@ import './PeriodsTable.scss';
 import { MeasurementPeriod } from '../../../../Utils/Types';
 
 // PeriodsTable
-// TODO- NOT a priority, focus rn is on adding new records 
 const PeriodsTable = (props: {
     periods: Array<MeasurementPeriod>
     selectPeriod: (period: MeasurementPeriod) => void

@@ -108,3 +108,26 @@
     white-space: normal;
   }
 }
+
+.ant-tooltip {
+  max-width: 500px;
+}
+
+.ant-tooltip-content {
+  .ant-tooltip-inner {
+    background-color: rgba(0, 0, 0, 0.95);
+  }
+}
+
+.TooltipHolder {
+  background-color: white;
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgb(205, 255, 205);
+  }
+}

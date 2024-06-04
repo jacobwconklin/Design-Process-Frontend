@@ -7,7 +7,6 @@ import { objectKeysFirstLetterToLowerCase } from '../../../../Utils/Utils';
 import { UserContext } from '../../../../App';
 
 // ActivitiesTable
-// TODO- NOT a priority, focus rn is on adding new records 
 const ActivitiesTable = (props: {
     period: MeasurementPeriod
 }) => {
