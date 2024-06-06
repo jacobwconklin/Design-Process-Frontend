@@ -151,8 +151,6 @@ const SharedTask = (props: {
                                 checked={props.activity.question4 === '' + (index + 1)}
                                 value={props.activity.question4 === '' + (index + 1)}
                                 onClick={() => {
-                                    console.log("" + (index + 1));
-                                    console.log(props.activity.question4);
                                     props.updateActivityField("" + (index + 1), "question4");
                                 }}
                             />

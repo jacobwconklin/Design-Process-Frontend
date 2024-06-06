@@ -29,10 +29,7 @@ const Login = (props: {}) => {
                 setEmail(stateEmail);
                 setAuthToken(loginResult.token);
                 const loginInfo = {email: stateEmail, authToken: loginResult.token, isAdmin: !!loginResult.token};
-                console.log(loginInfo)
                 saveObjectToStorage('loginInformation', loginInfo);
-                console.log('saved login info');
-                
                 setTimeout(() => {navigate('/activities');}, 1000)
             } else if (loginResult.error === 'Invalid Admin Credentials') {
                 alert("Login Failed. Check Username and Password are Correct.")

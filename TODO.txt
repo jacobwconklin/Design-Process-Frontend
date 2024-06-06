@@ -21,4 +21,4 @@ Big TODOs:
 
 3) Probably want some kind of system for data back-up and recovery (maybe as simple as csv exports regularly, maybe more involved like back-up database server)
 
-ALSO ask professor for estimate of final number of users. 
+ Look into automatically backing up database.

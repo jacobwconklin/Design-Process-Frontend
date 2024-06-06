@@ -15,11 +15,13 @@ const VerificationModal = (props: {
     // title for modal and message for modal text (could have defaults but don't currently)
 
     return (
-        <div className='VerificationModal'
+        <div className='Modal'
             style={{margin: '0px'}}
             onClick={() => props.cancel()}
         >
-            <div className='ModalBody'>
+            <div className='ModalBody'
+                onClick={(e) => e.stopPropagation()}
+            >
                 <h1 className='title-font'> {props.title} </h1>
                 <p> {props.message} </p>
                 <br />

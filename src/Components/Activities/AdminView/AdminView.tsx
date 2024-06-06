@@ -46,7 +46,6 @@ const AdminView = (props: {}) => {
   const [userPeriods, setUserPeriods] = useState<Array<MeasurementPeriod>>([]);
   const pullAllMeasurementPeriodsForUser = async (userEmail: string) => {
     const response = await postRequest('navydp/getAllMeasurementPeriodsForUser', JSON.stringify({ adminEmail: email, token: authToken, email: userEmail }));
-    console.log(response)
     if (response.success) {
       setUserPeriods(response.data.map((obj: any) => objectKeysFirstLetterToLowerCase(obj)) as Array<MeasurementPeriod>);
     } else {

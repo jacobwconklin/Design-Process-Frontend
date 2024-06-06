@@ -17,7 +17,6 @@ const ActivitiesTable = (props: {
     const [activities, setActivities] = useState<Array<Activity>>([]);
     useEffect(() => {
         // get all Activities for the given period
-        console.log(props.period.id + " is the period id")
         const pullActivities = async () => {
             const response = await postRequest('navydp/getActivityRecordsForPeriod', JSON.stringify({ 
                 measurementPeriod: props.period.id, adminEmail: email, token: authToken

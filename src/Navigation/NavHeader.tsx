@@ -71,7 +71,8 @@ const NavHeader = () => {
                             setIsAdmin(false);
                             clearObjectFromStorage('loginInformation');
                         }
-                        navigate('/')
+                        navigate('/');
+                        setShowReturnHomeAndLogOutModal(false);
                     }}
                     cancel={() => setShowReturnHomeAndLogOutModal(false)}
                 />
@@ -98,7 +99,8 @@ const NavHeader = () => {
                             setIsAdmin(false);
                             clearObjectFromStorage('loginInformation');
                         }
-                        navigate('/')
+                        navigate('/');
+                        setShowReturnHomeModal(false);
                     }}
                     cancel={() => setShowReturnHomeModal(false)}
                 />
