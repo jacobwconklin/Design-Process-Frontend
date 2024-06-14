@@ -1,32 +1,45 @@
 import { Button, Input } from 'antd';
 import './ExitSurvey.scss';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { postRequest } from '../../Utils/Api';
-
-// let newVariable = 5;
-
-// const t = "time"
-
-// const sum = (number1: string, number2: any ) => {
-//     return number1 + number2;
-// }
+import { UserContext } from '../../App';
+import { UserContextType } from '../../Utils/Types';
+import { FullScreenConfetti } from '../../Reusable/Confetti';
 
 // ExitSurvey
 const ExitSurvey = (props: {}) => {
 
+    const { email } = useContext(UserContext) as UserContextType;
 
     // code section
     const [name, setName] = useState('');
 
+    // set to true to show confetti
+    const [showConfetti, setShowConfetti] = useState(false);
+
     // submit exit survey
     // TODO teach about try catch finally stuff. 
     const submitFunction = async () => {
-        const responseFromBackend = await postRequest("/navydp/exitSurvey", JSON.stringify({
-            "name": name
-        }))
-        console.log(responseFromBackend);
+        try {
+            const responseFromBackend = await postRequest("/navydp/exitSurvey", JSON.stringify({
+                "name": name,
+                "email": email
+            }))
+            if (responseFromBackend.success) {
+                // User finished exit survey. 
+                alert("Thank you for submitting exit survey: " + responseFromBackend.message);
+                setShowConfetti(true);
+                setTimeout(() => {
+                    setShowConfetti(false);
+                }, 5000);
+            } else {
+                alert("Error submitting survey");
+            }
+        } catch (error) {
+            console.error("Error: ", error);
+            alert("Error submitting exit survey");
+        } 
     }
-
 
     // html section
   return (
@@ -43,27 +56,9 @@ const ExitSurvey = (props: {}) => {
                 value={name}
                 onChange={(event) => {
                     // setName(event.target.value);
-                    console.log("User typed: ", event.target.value)
-                    console.log("object is: ", event);
                     setName(event.target.value);
                 }}
             />
-            {/** Submit Button */}
-            {
-                // this can be a comment
-                // truthy and falsey
-                // falsey 
-                //0, undefined, null, ''. "", false
-
-                // truthy
-                //[]
-
-
-                // name &&
-                // <Button className='SubmitButton' type="primary">
-                //     Submit
-                // </Button>
-            }
             <Button 
                 className='SubmitButton' 
                 type="primary"
@@ -73,6 +68,10 @@ const ExitSurvey = (props: {}) => {
                     Submit
             </Button>
         </div>
+        {
+            showConfetti &&
+            <FullScreenConfetti />
+        }
     </div>
   );
 };

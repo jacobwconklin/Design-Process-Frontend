@@ -7,6 +7,7 @@ import { activityTypes, tasks } from '../../../Utils/Utils';
 import { UserContext } from '../../../App';
 import { postRequest } from '../../../Utils/Api';
 import dayjs, { Dayjs } from 'dayjs';
+import ExitSurvey from '../../ExitSurvey/ExitSurvey';
 
 // AddRecord adds an entire measurement period for the user with all of its new activities and ther details. It ensures
 // the information is sent and saved to the database. 
@@ -354,6 +355,10 @@ const AddRecord = () => {
               }}
               value={leaveProjectDate ? dayjs(leaveProjectDate) : null}
             />
+            {
+              false && 
+              <ExitSurvey />
+            }
             <div className='ModalButtons'>
               <Button onClick={() => leaveProject()}>Confirm</Button>
               <Button type='primary' onClick={() => setShowLeaveProjectModal(false)}>Cancel</Button>

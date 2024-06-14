@@ -11,14 +11,8 @@ Big TODOs:
 
 1) Handle user saying they are done working on the project, probably a whole page with exit survey 
 
-2) if user submits a second report for the same measurement period should we:
-    a) keep both and reference both
-    b) combine all new activities (in case they forgot one)
-    c) replace whatever they have entered previously with the new entry
-    d) not allow it 
-    e) (probably best) have them tell us record is already found and ask if they want to add to it or replace it, then do that
-    ??? For Prof 
-
 3) Probably want some kind of system for data back-up and recovery (maybe as simple as csv exports regularly, maybe more involved like back-up database server)
 
  Look into automatically backing up database.
+
+ Change durations and totalDurations to decimals? or have FE only accept ints. 
