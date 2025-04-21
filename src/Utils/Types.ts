@@ -10,7 +10,7 @@ export interface UserContextType {
 // All information for players obtained from the registration form
 export interface UserInformation {
     email: string;
-    password: string;
+    password?: string;
     gender: string;
     age: null | number;
     ethnicity: string;
@@ -72,22 +72,10 @@ export interface UserInformation {
     projectContextFamiliarity: null | number | string;
     navyPlatformFamiliarity: null | number | string;
     designChangeCharacteristicsFamiliarity: null | number | string;
-}
 
-// Holds simpler information about a user to be displayed in the admin dashboard table
-// All information for players obtained from the registration form
-export interface UserTableInformation {
-    email: string; // TODO if anonymitiy is desired, hide the email and use a unique ID
-    
-    // employer: string, TODO, could leave these, but won't for now
-    // team: string;
-    // title: string;
-
-    // compiled by backend:
-    lastRecordedPeriodStartDate: string;
-    lastRecordedPeriodEndDate: string;
-    numberOfPeriods: number;
-    totalHoursRecorded: number;
+    // admin dash fields
+    joinedProjectDate?: string;
+    leftProjectDate?: string;
 }
 
 // Holds information about measurement period (contains one or more activity records)
@@ -107,5 +95,51 @@ export interface Activity {
     question1: string;
     question2: string;
     question3?: string;
-    pointScale?: number;
+    question4?: string;
+}
+
+// a group of measurement periods for a single user in a range to show on admin dashboard
+export interface UserMeasurementPeriod {
+    // from user table
+    email: string;
+    joinedProjectDate?: string;
+    leftProjectDate?: string;
+
+    // compiled by backend
+    lastRecordedPeriodStartDate: string;
+    lastRecordedPeriodEndDate: string;
+    numberOfPeriods: number;
+    totalHoursRecorded: number;
+
+    // sent from backend and compiled by frontend
+    periods: Array<MeasurementPeriod>;
+}
+
+// Holds simpler information about a user to be displayed in the admin dashboard table
+// All information for players obtained from the registration form
+export interface UserTableInformation {
+    email: string;
+
+    joinedProjectDate?: string;
+    leftProjectDate?: string;
+
+    // compiled by backend:
+    lastRecordedPeriodStartDate: string;
+    lastRecordedPeriodEndDate: string;
+    numberOfPeriods: number;
+    totalHoursRecorded: number;
+}
+
+
+// Holds simpler information about a user to be displayed in the admin dashboard table
+// All information for players obtained from the registration form
+export interface ExpandedUserTableInformation {
+    joinedProjectDate?: string;
+    leftProjectDate?: string;
+
+    // compiled by backend:
+    lastRecordedPeriodStartDate: string;
+    lastRecordedPeriodEndDate: string;
+    numberOfPeriods: number;
+    totalHoursRecorded: number;
 }

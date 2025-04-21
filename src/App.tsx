@@ -21,7 +21,7 @@ function App() {
           value={{
             isAdmin, setIsAdmin,
             email, setEmail,
-            authToken, setAuthToken
+            authToken, setAuthToken // This is essentially the admin's
           }}
         >
           <div className='StaticBackground'></div>

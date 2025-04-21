@@ -1,0 +1,40 @@
+.ReminderEmail {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 100%;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 11;
+    overflow: auto;
+
+    .ModalBody {
+        width: 60%;
+        min-width: fit-content;
+        background-color: white;
+        border: 3px solid black;
+        color: black;
+        border-radius: 10px;
+        padding: 20px 40px 20px 40px;
+        text-align: center;
+        text-wrap: wrap;
+        z-index: 12;
+        margin: 100px 10px 0px 10px;
+
+        .ant-input {
+            min-width: 250px;
+        }
+
+
+        .ModalButtons {
+            display: flex;
+            justify-content: space-evenly;
+        }
+    }
+}

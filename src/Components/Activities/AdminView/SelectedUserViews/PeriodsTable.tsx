@@ -1,9 +1,8 @@
 import { Table } from 'antd';
 import './PeriodsTable.scss';
-import { MeasurementPeriod } from '../../../Utils/Types';
+import { MeasurementPeriod } from '../../../../Utils/Types';
 
 // PeriodsTable
-// TODO- NOT a priority, focus rn is on adding new records 
 const PeriodsTable = (props: {
     periods: Array<MeasurementPeriod>
     selectPeriod: (period: MeasurementPeriod) => void
@@ -57,7 +56,7 @@ const PeriodsTable = (props: {
             startDate: period.startDate,
             endDate: period.endDate,
             totalDuration: period.totalDuration,
-            entered: period.entered
+            entered: period.entered,
         }
     })
 

@@ -6,6 +6,9 @@
     //     border-radius: 8px;
     // }
 
+    .AddActivitySelect {
+        border: 3px solid darkgreen;
+    }
 
 
     .ant-select {
@@ -18,6 +21,11 @@
 
     .ant-select-dropdown {
         text-wrap: wrap;
+    }
+
+    .LeavingPromptAndButton {
+        justify-content: center;
+        gap: 10px;
     }
 }
 
@@ -32,4 +40,24 @@
 .ErrorForm {
     border: 1px solid red;
     
+}
+
+.ModalBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    max-width: 600px;
+
+    p {
+        width: 80%;
+        text-align: left;
+    }
+}
+
+.DateModal {
+    .ModalButtons {
+        flex-direction: column;
+        align-items: center;
+    }
 }

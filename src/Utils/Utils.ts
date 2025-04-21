@@ -20,6 +20,13 @@ export const ordinal_suffix = (i: number) => {
     return i + "th";
 }
 
+// Tells if a string is a valid email
+export const isValidEmail = (email: string) => {
+    // eslint-disable-next-line no-useless-escape
+    const emailRegex = /^.+@.+\..+$/;
+    return emailRegex.test(email);
+}
+
 // Saves an object to browser storage. Saves it to both local and session storage under the same key given.
 // This is useful so that if a player refreshes their information can be preserved. Session storage is specific
 // to each tab, so checking session storage first allows a player to run the game with multiple tabs open. (good for dev and testing)
@@ -59,6 +66,7 @@ export const tasks = [
     "I retrieved knowledge by doing research, data collection, or testing",
     "I waited for new information (and in parallel worked on another activity not related to this project).",
     "I updated an existing analytical/mathematical model based on new information.",
+    "I obtained knowledge from a stakeholder, planning yard, SME, or technical authority outside of B50",
     "I analyzed some new information that I received.",
     "I shared new information or data with colleagues."
   ];

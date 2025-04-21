@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 import { UserContext } from '../../App';
 import { UserContextType } from '../../Utils/Types';
 import { postRequest } from '../../Utils/Api';
+import { saveObjectToStorage } from '../../Utils/Utils';
 
 // Login
 const Login = (props: {}) => {
@@ -17,21 +18,24 @@ const Login = (props: {}) => {
     const [password, setPassword] = useState('');
 
     const login = async () => {
-        // TODO- make API call to login
+        // make API call to login
         // if successful, set context values and navigate to activities
         // if not, display error message
         // const loginResult = {success: true, token: '1234', isAdmin: stateEmail ==='admin' ? true :  false};
         try {
             const loginResult = await postRequest('navydp/checkLogin', JSON.stringify({email: stateEmail, password: password}))
             if (loginResult.success) {
-                setIsAdmin(stateEmail ==='admin');
+                setIsAdmin(!!loginResult.token);
                 setEmail(stateEmail);
-                setAuthToken('TODO');
-                navigate('/activities');
-            } else if (loginResult.error === 'User not found') {
+                setAuthToken(loginResult.token);
+                const loginInfo = {email: stateEmail, authToken: loginResult.token, isAdmin: !!loginResult.token};
+                saveObjectToStorage('loginInformation', loginInfo);
+                setTimeout(() => {navigate('/activities');}, 1000)
+            } else if (loginResult.error === 'Invalid Admin Credentials') {
                 alert("Login Failed. Check Username and Password are Correct.")
             } else {
                 console.error("Error logging in", loginResult);
+                alert("Login Failed. Unable to Log In.")
             }
         } catch (error) {
             console.error("Error logging in", error);
@@ -41,10 +45,10 @@ const Login = (props: {}) => {
   return (
     <div className="Login Top ColumnFlex">
         <div className='Bubble'>
-            <h1>Login</h1>
-            <p>Email:</p>
+            <h1>Admin Login</h1>
+            <p>Username:</p>
             <Input 
-                placeholder='Your email here'
+                placeholder='Your username here'
                 value={stateEmail}
                 onChange={(e) => setStateEmail(e.target.value)}
             />
@@ -54,6 +58,7 @@ const Login = (props: {}) => {
                 placeholder='Your Password here'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onPressEnter={() => login()}
             />
             <br/>
             <br/>
@@ -65,10 +70,10 @@ const Login = (props: {}) => {
             </Button>
             <br/>
             <br/>
-            <p>Don't have an account yet?</p>
+            <p>Not an Admin? Return home here</p>
             <Button
-                onClick={() => navigate('/signup')}
-            >Sign Up</Button>
+                onClick={() => navigate('/')}
+            >Return Home</Button>
         </div>
     </div>
   );

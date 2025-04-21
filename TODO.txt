@@ -1,25 +1,18 @@
-1)  User actions:
-    forgot / recover password?
-        * store sha-512 hash of pw with salt added in be to compare w/ for logins
-        * when user creates account / logs in send them back the db id for that person as their "token"? (maybe JWT better? Could add expiration?)
-        * if user forgets password, send recovery "code" (6 digits or so) to their email and have them enter it (will have to create temporary database entry with id and recovery to compare I guess)
-        * user inputs recovery code and new password, if it matches override old password in db with new password and log user in.
-    validate user emails on sign up? (ie send email with button they have to press?)
-
-
-2) Admin action:
-    ie show all users who haven't submitted in last 'x' amount of time?
-    show users with less than 'x' submissions?
-    Monitor users,
-    show data visualizations...? Maybe per activity type show durations x by utc time?
-
-3) Other Modifications:
-- Maybe make users specify only pre-determined time periods, like Mon-Wed and Thu-Fri blocks rather than arbitrary dates.
-
-- make tasks[1] case 2 a select instead of a text area?
+Potential Modifications:
 
 - maybe make activities box and measurement period box separate bubbles in a flex box so they are side by side on wide enough screens.
 
-Ask Prof:
-    Want to capture what they are doing in sequential order. IE what did they do Monday? 
-    (Does  the sequential order matter within a measurement period? (not sure about overlap)). \
+- Could add color if "entered" value is > a certain amount after end date to say the user entered the values late, if wanted. 
+
+- Require multiple activity types? ( incentivizing users to fill out form properly somehow? )
+
+
+Big TODOs:
+
+1) Handle user saying they are done working on the project, probably a whole page with exit survey 
+
+3) Probably want some kind of system for data back-up and recovery (maybe as simple as csv exports regularly, maybe more involved like back-up database server)
+
+ Look into automatically backing up database.
+
+ Change durations and totalDurations to decimals? or have FE only accept ints. 
